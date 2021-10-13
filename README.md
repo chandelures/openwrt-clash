@@ -10,19 +10,18 @@ This repository is the clash binary package and optional Country.mmdb download s
 
 ## Build
 
-You should use the Openwrt source code or SDK to build the openwrt-clash package.
+You should use the Openwrt source code or SDK to build the package.
 
 ```shell
 $ git clone https://github.com/chandelures/openwrt-clash
 
 $ make menuconfig
 
-Extra Package ---> <M> openwrt-clash
+Extra Packages ---> <M> openwrt-clash
 
 $ make package/openwrt-clash/compile V=s
 ```
 
-**Warning**
+### Warning
 
-If any download error occurred, please try to run
-`export GOPROXY=https://goproxy.io` before the building.
+If any download error occurred, please try to run `export GOPROXY=https://goproxy.io` before building.
