@@ -152,8 +152,7 @@ jobs:
           ./scripts/feeds install -a
           make defconfig
           make package/${PACKAGE_NAME}/{clean,compile}
-          find "$SDK_HOME/bin" -type f -name "${PACKAGE_NAME}*.ipk" \
-           -exec cp -f {} "${{ github.workspace }}" \;
+          find "$SDK_HOME/bin" -type f -name "${PACKAGE_NAME}*.ipk" -exec cp -f {} "${{ github.workspace }}" \;
       
       -name: Release and Upload Assets
         uses: softprops/action-gh-release@v1
