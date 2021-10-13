@@ -104,7 +104,7 @@ jobs:
       ARCH: ${{ matrix.arch }}
       CACHE_DIR: ~/cache
 
-    setps:
+    steps:
       - name: Checkout
         uses: actions/checkout@v2
 
