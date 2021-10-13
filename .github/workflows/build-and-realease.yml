@@ -47,7 +47,7 @@ jobs:
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/imx6/generic
             sdk_name: -sdk-imx6_
           - arch: arm_cortex-a9_vfpv3
-            sdk_url_path: https://downloads.openwrt.org/releases/19.07.2/targets/mvebu/cortexa9
+            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/mvebu/cortexa9
             sdk_name: -sdk-19.07.2-mvebu-cortexa9_
           - arch: arm_cortex-a9_vfpv3-d16
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/mvebu/cortexa9
@@ -58,9 +58,6 @@ jobs:
           - arch: arm_mpcore
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/oxnas/ox820
             sdk_name: -sdk-oxnas-ox820_
-          - arch: arm_mpcore_vfp
-            sdk_url_path: https://downloads.openwrt.org/releases/19.07.7/targets/cns3xxx/generic
-            sdk_name: -sdk-19.07.7-cns3xxx_
           - arch: arm_xscale
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/kirkwood/generic
             sdk_name: -sdk-kirkwood_
@@ -71,26 +68,14 @@ jobs:
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/generic
             sdk_name: -sdk-x86-generic_
           - arch: mips64_octeon
-            sdk_url_path: http://downloads.openwrt.org/releases/18.06.5/targets/octeon/generic
-            sdk_name: -sdk-18.06.5-octeon_
+            sdk_url_path: http://downloads.openwrt.org/snapshots/targets/octeon/generic
+            sdk_name: -sdk-octeon_
           - arch: mips64_octeonplus
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/octeon/generic
             sdk_name: -sdk-octeon_
-          - arch: mipsel_24kc
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/ramips/mt7620
-            sdk_name: -sdk-ramips-mt7620_
-          - arch: mipsel_24kc_24kf
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/pistachio/generic
-            sdk_name: -sdk-pistachio_
-          - arch: mipsel_74kc
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm47xx/mips74k
-            sdk_name: -sdk-bcm47xx-mips74k_
           - arch: mipsel_mips32
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm47xx/generic
             sdk_name: -sdk-bcm47xx-generic_
-          - arch: mips_24kc
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/ath79/generic
-            sdk_name: -sdk-ath79-generic_
           - arch: mips_mips32
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm63xx/generic
             sdk_name: -sdk-bcm63xx-generic_
