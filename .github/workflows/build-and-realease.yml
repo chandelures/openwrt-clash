@@ -125,11 +125,11 @@ jobs:
       - name: Create Cache Directories
         run: |
           CACHE_DIR_SDK="$CACHE_DIR/sdk"
-          mkdir -p "$CACHE_DIR/sdk"
           CACHE_DIR_DL="$CACHE_DIR/dl"
-          mkdir -p "$CACHE_DIR/dl"
           CACHE_DIR_FEEDS="$CACHE_DIR/feeds"
-          mkdir -p "$CACHE_DIR/feeds"
+          mkdir -p "$CACHE_DIR_SDK"
+          mkdir -p "$CACHE_DIR_DL"
+          mkdir -p "$CACHE_DIR_FEEDS"
           echo "CACHE_DIR_SDK=$CACHE_DIR_SDK" >> $GITHUB_ENV
           echo "CACHE_DIR_DL=$CACHE_DIR_DL" >> $GITHUB_ENV
           echo "CACHE_DIR_FEEDS=$CACHE_DIR_FEEDS" >> $GITHUB_ENV
