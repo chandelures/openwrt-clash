@@ -45,9 +45,6 @@ jobs:
             sdk_name: -sdk-imx6_
           - arch: arm_cortex-a9_vfpv3
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/mvebu/cortexa9
-            sdk_name: -sdk-19.07.2-mvebu-cortexa9_
-          - arch: arm_cortex-a9_vfpv3-d16
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/mvebu/cortexa9
             sdk_name: -sdk-mvebu-cortexa9_
           - arch: arm_fa526
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/gemini/generic
