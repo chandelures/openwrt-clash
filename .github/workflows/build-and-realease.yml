@@ -127,9 +127,9 @@ jobs:
           CACHE_DIR_SDK="$CACHE_DIR/sdk"
           CACHE_DIR_DL="$CACHE_DIR/dl"
           CACHE_DIR_FEEDS="$CACHE_DIR/feeds"
-          [ -d "$CACHE_DIR_SDK" ] || mkdir -p "$CACHE_DIR_SDK"
-          [ -d "$CACHE_DIR_DL" ] || mkdir -p "$CACHE_DIR_DL"
-          [ -d "$CACHE_DIR_FEEDS" ] || mkdir -p "$CACHE_DIR_FEEDS"
+          mkdir -p "$CACHE_DIR_SDK"
+          mkdir -p "$CACHE_DIR_DL"
+          mkdir -p "$CACHE_DIR_FEEDS"
           echo "CACHE_DIR_SDK=$CACHE_DIR_SDK" >> $GITHUB_ENV
           echo "CACHE_DIR_DL=$CACHE_DIR_DL" >> $GITHUB_ENV
           echo "CACHE_DIR_FEEDS=$CACHE_DIR_FEEDS" >> $GITHUB_ENV
@@ -138,6 +138,18 @@ jobs:
       - name: Prepare Build Environment
         run: |
           cd "$CACHE_DIR_SDK"
+          if ! ( wget -q -O - "$SDK_URL_PATH/sha256sums" | grep -- "$SDK_NAME" > sha256sums.small 2>/dev/null ) ; then
+            echo "::error::Can not find ${SDK_NAME} file in sha256sums."
+            exit 1
+          fi
+          SDK_FILE="$(cat sha256sums.small | cut -d' ' -f2 | sed 's/*//g')"
+          if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
+            wget -q -O "$SDK_FILE" "$SDK_URL_PATH/$SDK_FILE"
+            if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
+              echo "::error::SDK can not be verified!"
+              exit 1
+            fi
+          fi
           wget -q -O "$SDK_FILE" "$SDK_URL_PATH/$SDK_FILE"
           tar -Jxf "$CACHE_DIR_SDK/$SDK_FILE" -C "$SDK_HOME" --strip=1
           cd "$SDK_HOME"
@@ -149,11 +161,11 @@ jobs:
       - name: Build Packages
         run: |
           cd "$SDK_HOME"
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
+          ./scripts/feeds update packages
+          ./scripts/feeds install packages
           ln -s "${{ github.workspace }}" "package/$PACKAGE_NAME"
           make defconfig
-          make package/${PACKAGE_NAME}/{clean,compile}
+          make package/${PACKAGE_NAME}/{clean,download,compile}
           find "$SDK_HOME/bin" -type f -name "${PACKAGE_NAME}*.ipk" \
            -exec cp -f {} "${{ github.workspace }}" \;
       
