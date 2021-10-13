@@ -150,6 +150,7 @@ jobs:
           cd "$SDK_HOME"
           ./scripts/feeds update -a
           ./scripts/feeds install -a
+          ln -s "${{ github.workspace }}" "package/$PACKAGE_NAME"
           make defconfig
           make package/${PACKAGE_NAME}/{clean,compile}
           find "$SDK_HOME/bin" -type f -name "${PACKAGE_NAME}*.ipk" \
