@@ -124,9 +124,9 @@ jobs:
       
       - name: Create Cache Directories
         run: |
-          CACHE_DIR_SDK="$(eval echo "$CACHE_DIR/sdk")"
-          CACHE_DIR_DL="$(eval echo "$CACHE_DIR/dl")"
-          CACHE_DIR_FEEDS="$(eval echo "$CACHE_DIR/feeds")"
+          CACHE_DIR_SDK="$CACHE_DIR/sdk"
+          CACHE_DIR_DL="$CACHE_DIR/dl"
+          CACHE_DIR_FEEDS="$CACHE_DIR/feeds"
           mkdir -p "$CACHE_DIR_SDK"
           mkdir -p "$CACHE_DIR_DL"
           mkdir -p "$CACHE_DIR_FEEDS"
