@@ -6,7 +6,9 @@
 
 ## Description
 
-This repository is the clash binary package and optional Country.mmdb download support based on [Dreamacro/clash](https://github.com/Dreamacro/clash) for Openwrt.
+This repository is the clash binary package and optional Country.mmdb download support based on
+[Dreamacro/clash](https://github.com/Dreamacro/clash) and
+[Dreamacro/maxmind-geoip](https://github.com/Dreamacro/maxmind-geoip) for Openwrt.
 
 ## Build
 
