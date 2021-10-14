@@ -46,7 +46,7 @@ jobs:
           - arch: arm_cortex-a9_neon
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/imx6/generic
             sdk_name: -sdk-imx6_
-          - arch: arm_cortex-a9_vfpv3
+          - arch: arm_cortex-a9_vfpv3-d16
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/mvebu/cortexa9
             sdk_name: -sdk-mvebu-cortexa9_
           - arch: arm_fa526
@@ -58,17 +58,8 @@ jobs:
           - arch: arm_xscale
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/kirkwood/generic
             sdk_name: -sdk-kirkwood_
-          - arch: i386_pentium
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/legacy
-            sdk_name: -sdk-x86-legacy_
-          - arch: i386_pentium4
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/generic
-            sdk_name: -sdk-x86-generic_
-          - arch: mips64_octeon
-            sdk_url_path: http://downloads.openwrt.org/snapshots/targets/octeon/generic
-            sdk_name: -sdk-octeon_
           - arch: mips64_octeonplus
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/octeon/generic
+            sdk_url_path: http://downloads.openwrt.org/snapshots/targets/octeon/generic
             sdk_name: -sdk-octeon_
           - arch: mipsel_mips32
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm47xx/generic
@@ -76,6 +67,9 @@ jobs:
           - arch: mips_mips32
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm63xx/generic
             sdk_name: -sdk-bcm63xx-generic_
+          - arch: i386_pentium4
+            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/generic
+            sdk_name: -sdk-x86-generic_
           - arch: x86_64
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/64
             sdk_name: -sdk-x86-64_
@@ -123,20 +117,18 @@ jobs:
             exit 1
           fi
           SDK_FILE="$(cat sha256sums.small | cut -d' ' -f2 | sed 's/*//g')"
+
+          wget -q -O "$SDK_FILE" "$SDK_URL_PATH/$SDK_FILE"
           if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
-            wget -q -O "$SDK_FILE" "$SDK_URL_PATH/$SDK_FILE"
-            if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
-              echo "SDK can not be verified!"
-              exit 1
-            fi
+            echo "SDK can not be verified!"
+            exit 1
           fi
           tar -Jxf "$SDK_DL_DIR/$SDK_FILE" -C "$SDK_HOME" --strip=1
 
-          cd "$SDK_HOME"
-          [ -d "dl" ] && rm -rf "dl" || true
-          [ -d "feeds" ] && rm -rf "feeds" || true
-          ln -s "$CACHE_DIR_DL" "dl"
-          ln -s "$CACHE_DIR_FEEDS" "feeds"
+          rm -rf "$SDK_HOME/dl"
+          rm -rf "$SDK_HOME/feeds"
+          ln -s "$CACHE_DIR_DL" "$SDK_HOME/dl"
+          ln -s "$CACHE_DIR_FEEDS" "$SDK_HOME/feeds"
         
       - name: Build Packages
         run: |
