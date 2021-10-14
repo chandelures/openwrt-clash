@@ -17,7 +17,7 @@ $ git clone https://github.com/chandelures/openwrt-clash
 
 $ make menuconfig
 
-Extra Packages ---> <M> openwrt-clash
+Extra Packages ---> <M> clash
 
 $ make package/openwrt-clash/compile V=s
 ```

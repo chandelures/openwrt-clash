@@ -1,6 +1,6 @@
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=openwrt-clash
+PKG_NAME:=clash
 PKG_VERSION:=1.7.1
 PKG_RELEASE:=$(AUTORELEASE)
 
@@ -38,7 +38,7 @@ define Package/$(PKG_NAME)/description
 endef
 
 define Package/$(PKG_NAME)/config
-	menu "Openwrt Clash Counfiguration"
+	menu "Clash Counfiguration"
 		depends on PACKAGE_$(PKG_NAME)
 	
 	config PACKAGE_CLASH_INCLUDE_COUNTRY_MMDB
