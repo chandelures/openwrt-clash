@@ -84,14 +84,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: Set Release env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Setup Cache
         uses: actions/cache@v2
         with:
           path: ${{ env.CACHE_DIR }}
-          key: ${{ runner.os }}:${{ env.PACKAGE_NAME }}:${{ env.ARCH }}:release:cache:${{ github.run_number }}
-          restore-keys: |
-            ${{ runner.os }}:${{ env.PACKAGE_NAME }}:${{ env.ARCH }}:cache:
+          key: ${{ runner.os }}-${{ env.ARCH }}-${{ env.RELEASE_VERSION }}
       
       - name: Install Dependencies
         run: |
