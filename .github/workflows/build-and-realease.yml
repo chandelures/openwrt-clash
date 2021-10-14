@@ -114,14 +114,13 @@ jobs:
 
       - name: Prepare Build Environment
         run: |
-          cd "$SDK_DL_DIR"
           if ! ( wget -q -O - "$SDK_URL_PATH/sha256sums" | grep -- "$SDK_NAME" > sha256sums.small 2>/dev/null ) ; then
             echo "Can not find ${SDK_NAME} file in sha256sums."
             exit 1
           fi
           SDK_FILE="$(cat sha256sums.small | cut -d' ' -f2 | sed 's/*//g')"
           if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
-            wget -q -O "$SDK_FILE" "$SDK_URL_PATH/$SDK_FILE"
+            wget -q -O "$SDK_DL_DIR/$SDK_FILE" "$SDK_URL_PATH/$SDK_FILE"
             if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
               echo "SDK can not be verified!"
               exit 1
@@ -129,11 +128,10 @@ jobs:
           fi
           tar -Jxf "$SDK_DL_DIR/$SDK_FILE" -C "$SDK_HOME" --strip=1
 
-          cd "$SDK_HOME"
-          [ -d "dl" ] && rm -rf "dl" || true
-          [ -d "feeds" ] && rm -rf "feeds" || true
-          ln -s "$CACHE_DIR_DL" "dl"
-          ln -s "$CACHE_DIR_FEEDS" "feeds"
+          rm -rf "$SDK_HOME/dl"
+          rm -rf "$SDK_HOME/feeds"
+          ln -s "$CACHE_DIR_DL" "$SDK_HOME/dl"
+          ln -s "$CACHE_DIR_FEEDS" "$SDK_HOME/feeds"
         
       - name: Build Packages
         run: |
