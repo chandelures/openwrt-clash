@@ -75,7 +75,7 @@ jobs:
             sdk_name: -sdk-x86-64_
     
     env:
-      PACKAGE_NAME: openwrt-clash
+      PACKAGE_NAME: clash
       SDK_URL_PATH: ${{ matrix.sdk_url_path }}
       SDK_NAME: ${{ matrix.sdk_name }}
       ARCH: ${{ matrix.arch }}
