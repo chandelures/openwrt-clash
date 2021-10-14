@@ -89,7 +89,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.CACHE_DIR }}
-          key: ${{ runner.os }}-{{ env.ARCH }}-{{ env.GITHUB_REF }}
+          key: ${{ runner.os }}-${{ env.ARCH }}-${{ env.GITHUB_REF }}
       
       - name: Install Dependencies
         run: |
