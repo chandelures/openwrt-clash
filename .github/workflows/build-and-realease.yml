@@ -119,12 +119,12 @@ jobs:
             exit 1
           fi
           SDK_FILE="$(cat sha256sums.small | cut -d' ' -f2 | sed 's/*//g')"
+
+          cd "$SDK_DL_DIR"
+          wget -q -O "$SDK_FILE" "$SDK_URL_PATH/$SDK_FILE"
           if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
-            wget -q -O "$SDK_DL_DIR/$SDK_FILE" "$SDK_URL_PATH/$SDK_FILE"
-            if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
-              echo "SDK can not be verified!"
-              exit 1
-            fi
+            echo "SDK can not be verified!"
+            exit 1
           fi
           tar -Jxf "$SDK_DL_DIR/$SDK_FILE" -C "$SDK_HOME" --strip=1
 
