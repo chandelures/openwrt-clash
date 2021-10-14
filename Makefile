@@ -48,10 +48,6 @@ define Package/$(PKG_NAME)/config
 	endmenu
 endef
 
-define Package/$(PKG_NAME)/conffiles
-	/etc/clash/
-endef
-
 COUNTRY_MMDB_VER=20211012
 COUNTRY_MMDB_FILE:=Country.$(COUNTRY_MMDB_VER).mmdb
 
