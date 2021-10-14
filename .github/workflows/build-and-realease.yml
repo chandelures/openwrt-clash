@@ -114,13 +114,13 @@ jobs:
 
       - name: Prepare Build Environment
         run: |
+          cd "$SDK_DL_DIR"
           if ! ( wget -q -O - "$SDK_URL_PATH/sha256sums" | grep -- "$SDK_NAME" > sha256sums.small 2>/dev/null ) ; then
             echo "Can not find ${SDK_NAME} file in sha256sums."
             exit 1
           fi
           SDK_FILE="$(cat sha256sums.small | cut -d' ' -f2 | sed 's/*//g')"
 
-          cd "$SDK_DL_DIR"
           wget -q -O "$SDK_FILE" "$SDK_URL_PATH/$SDK_FILE"
           if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
             echo "SDK can not be verified!"
