@@ -48,6 +48,10 @@ define Package/$(PKG_NAME)/config
 	endmenu
 endef
 
+define Package/$(PKG_NAME)/conffiles
+/etc/config/clash
+endef
+
 COUNTRY_MMDB_VER=20211012
 COUNTRY_MMDB_FILE:=Country.$(COUNTRY_MMDB_VER).mmdb
 
@@ -70,6 +74,12 @@ define Package/$(PKG_NAME)/install
 	$(call GoPackage/Package/Install/Bin,$(PKG_INSTALL_DIR))
 	$(INSTALL_DIR) $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/clash $(1)/usr/bin/clash
+
+	$(INSTALL_DIR) $(1)/etc/init.d/
+	$(INSTALL_BIN) $(CURDIR)/files/clash.init $(1)/etc/init.d/clash
+
+	$(INSTALL_DIR) $(1)/etc/config/
+	$(INSTALL_CONF) $(CURDIR)/files/clash.conf $(1)/etc/config/clash
 
 ifdef CONFIG_PACKAGE_CLASH_INCLUDE_COUNTRY_MMDB
 	$(INSTALL_DIR) $(1)/etc/clash/
