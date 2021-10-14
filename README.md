@@ -17,7 +17,10 @@ $ git clone https://github.com/chandelures/openwrt-clash
 
 $ make menuconfig
 
-Extra Packages ---> <M> openwrt-clash
+Network  --->
+    <M> clash
+        Clash Configuration  --->
+            [*] Include Country.mmdb
 
 $ make package/openwrt-clash/compile V=s
 ```

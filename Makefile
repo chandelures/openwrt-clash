@@ -1,6 +1,6 @@
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=openwrt-clash
+PKG_NAME:=clash
 PKG_VERSION:=1.7.1
 PKG_RELEASE:=$(AUTORELEASE)
 
@@ -26,8 +26,8 @@ include $(INCLUDE_DIR)/../feeds/packages/lang/golang/golang-package.mk
 
 define Package/$(PKG_NAME)
 	TITLE:=A rule-based tunnel in Go
-	SECTION:=Custom
-	CATEGORY:=Extra packages
+	SECTION:=net
+	CATEGORY:=Network
 	URL:=https://github.com/dreamacro/clash
 	DEPENDS:=$(GO_ARCH_DEPENDS)
 endef
@@ -38,7 +38,7 @@ define Package/$(PKG_NAME)/description
 endef
 
 define Package/$(PKG_NAME)/config
-	menu "Openwrt Clash Counfiguration"
+	menu "Clash Counfiguration"
 		depends on PACKAGE_$(PKG_NAME)
 	
 	config PACKAGE_CLASH_INCLUDE_COUNTRY_MMDB
