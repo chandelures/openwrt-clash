@@ -26,8 +26,8 @@ include $(INCLUDE_DIR)/../feeds/packages/lang/golang/golang-package.mk
 
 define Package/$(PKG_NAME)
 	TITLE:=A rule-based tunnel in Go
-	SECTION:=Custom
-	CATEGORY:=Extra packages
+	SECTION:=net
+	CATEGORY:=Network
 	URL:=https://github.com/dreamacro/clash
 	DEPENDS:=$(GO_ARCH_DEPENDS)
 endef
