@@ -88,7 +88,7 @@ clear_routing_rule() {
 create_dnsmasq_rule() {
 	local dns_host="$1"
 	local dns_port="$2"
-	echo "strict-order" >>$DNSMASQ_RULE_FILE
+	echo "strict-order" >$DNSMASQ_RULE_FILE
 	echo "server=$dns_host#$dns_port" >>$DNSMASQ_RULE_FILE
 	restart_other_service "dnsmasq"
 }
@@ -109,7 +109,7 @@ start_service() {
 	config_get dns_host "config" "dns_host"
 	config_get dns_port "config" "dns_port"
 
-	if [ "$action" = "start" ] && [ "$tproxy_enabled" -eq 1 ]; then
+	if [ "$tproxy_enabled" -eq 1 ]; then
 		clear_routing_rule "$tproxy_mark"
 		disable_firewall_include
 		create_routing_rule "$tproxy_mark"
