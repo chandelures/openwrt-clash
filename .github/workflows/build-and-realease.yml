@@ -25,9 +25,6 @@ jobs:
           - arch: arm_arm1176jzf-s_vfp
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm27xx/bcm2708
             sdk_name: -sdk-bcm27xx-bcm2708_
-          - arch: arm_arm926ej-s
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/at91/legacy
-            sdk_name: -sdk-at91-legacy_
           - arch: arm_cortex-a15_neon-vfpv4
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/ipq806x/generic
             sdk_name: -sdk-ipq806x-generic_
