@@ -5,6 +5,28 @@ START=99
 
 CONF="clash"
 PROG="/usr/bin/clash"
+PID_FILE="/var/run/clash.pid"
+CAP_FILE="/etc/capabilities/clash.json"
+DNSMASQ_RULE_FILE="/tmp/dnsmasq.d/clash.conf"
+
+if [ -e "$PID_FILE" ] && [ "$action" = "start" ]; then
+    exit 0
+fi
+
+if [ ! -e "$PID_FILE" ] && [ "$action" = "stop" ]; then
+    exit 0
+fi
+
+if [ ! -e "$PID_FILE" ] && { [ "$action" = "restart" ] \
+    || [ "$action" = "reload" ]; }
+then
+    action="start"
+fi
+
+restart_other_service() {
+    local service=$1
+    /etc/init.d/$service restart >/dev/null 2>&1
+}
 
 start_clash() {
     config_load "$CONF"
@@ -32,12 +54,84 @@ start_clash() {
     procd_set_param stdout 1
     procd_set_param stderr 1
     procd_set_param respawn
-    procd_set_param user nobody
+    procd_set_param pidfile "$PID_FILE"
+    procd_add_jail "$CONF"
+    procd_set_param capabilities "$CAP_FILE"
+    procd_set_param user 'clash'
+    procd_set_param no_new_privs 1
     procd_close_instance
 }
 
+enable_firewall_include() {
+    uci_set "firewall" "clash" "enabled" "1"
+    uci_commit "firewall"
+    restart_other_service "firewall"
+}
+
+disable_firewall_include() {
+    uci_set "firewall" "clash" "enabled" "0"
+    uci_commit "firewall"
+    restart_other_service "firewall"
+}
+
+create_routing_rule() {
+    local tproxy_mark="$1"
+    ip rule add fwmark "$tproxy_mark" table 100 2>/dev/null
+    ip route add local 0.0.0.0/0 dev lo table 100 2>/dev/null
+}
+
+clear_routing_rule() {
+    local tproxy_mark="$1"
+    ip rule del fwmark "$tproxy_mark" table 100 2>/dev/null
+    ip route del local 0.0.0.0/0 dev lo table 100 2>/dev/null
+}
+
+create_dnsmasq_rule() {
+    local dns_host="$1"
+    local dns_port="$2"
+    echo "strict-order" >>$DNSMASQ_RULE_FILE
+    echo "server=$dns_host#$dns_port" >>$DNSMASQ_RULE_FILE
+    restart_other_service "dnsmasq"
+}
+
+clear_dnsmasq_rule() {
+    rm -f $DNSMASQ_RULE_FILE
+    restart_other_service "dnsmasq"
+}
+
 start_service() {
+    config_load "$CONF"
+
+    local tproxy_enabled tporxy_mark
+    local dns_host dns_port
+
+    config_get_bool tproxy_enabled "config" "tproxy_enabled"
+    config_get tproxy_mark "config" "tproxy_mark" "1"
+    config_get dns_host "config" "dns_host"
+    config_get dns_port "config" "dns_port"
+
+    if [ "$action" = "start" ] && [ "$tproxy_enabled" -eq 1 ]; then
+        clear_routing_rule "$tproxy_mark"
+        disable_firewall_include
+        create_routing_rule "$tproxy_mark"
+        enable_firewall_include
+        create_dnsmasq_rule "$dns_host" "$dns_port"
+    fi
+
     start_clash
+}
+
+stop_service() {
+    if [ "$action" = "stop" ]; then
+        clear_routing_rule "$tproxy_mark"
+        disable_firewall_include
+        clear_dnsmasq_rule
+    fi
+}
+
+reload_service() {
+    stop
+    start
 }
 
 service_triggers() {

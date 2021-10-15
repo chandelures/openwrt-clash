@@ -1,0 +1,70 @@
+#!/bin/sh
+
+. "/lib/functions.sh"
+
+CONF="clash"
+IPTABLES="/usr/sbin/iptables"
+
+config_load "$CONF"
+
+config_get tproxy_port "config" "tproxy_port"
+config_get tproxy_mark "config" "tproxy_mark" "1"
+
+$IPTABLES -t mangle -N CLASH 2>/dev/null
+$IPTABLES -t mangle -N CLASH_LOCAL 2>/dev/null
+$IPTABLES -t mangle -N DIVERT 2>/dev/null
+
+iptables_bypass_rule() {
+	local chain=$1
+	local addr=$2
+
+	$IPTABLES -t mangle -A "$chain" -d "$addr" -j RETURN
+}
+
+bypass_address() {
+	cat <<-EOF
+		0.0.0.0/8
+		10.0.0.0/8
+		100.64.0.0/10
+		127.0.0.0/8
+		169.254.0.0/16
+		172.16.0.0/12
+		192.0.0.0/24
+		192.0.2.0/24
+		192.31.196.0/24
+		192.52.193.0/24
+		192.88.99.0/24
+		192.168.0.0/16
+		192.175.48.0/24
+		198.18.0.0/15
+		198.51.100.0/24
+		203.0.113.0/24
+		224.0.0.0/4
+		255.255.255.255
+	EOF
+}
+
+for addr in $(bypass_address); do
+	iptables_bypass_rule "CLASH" "$addr"
+	iptables_bypass_rule "CLASH_LOCAL" "$addr"
+done
+
+$IPTABLES -t mangle -I CLASH_LOCAL -m owner --uid-owner "clash" -j RETURN
+
+$IPTABLES -t mangle -A CLASH -p udp -j TPROXY \
+	--on-ip 127.0.0.1 --on-port "$tproxy_port" \
+	--tproxy-mark "$tproxy_mark"
+$IPTABLES -t mangle -A CLASH -p tcp -j TPROXY \
+	--on-ip 127.0.0.1 --on-port "$tproxy_port" \
+	--tproxy-mark "$tproxy_mark"
+$IPTABLES -t mangle -A CLASH_LOCAL -p udp -j MARK \
+	--set-mark "$tproxy_mark"
+$IPTABLES -t mangle -A CLASH_LOCAL -p tcp -j MARK \
+	--set-mark "$tproxy_mark"
+
+$IPTABLES -t mangle -A DIVERT -j MARK --set-mark $tproxy_mark
+$IPTABLES -t mangle -A DIVERT -j ACCEPT
+
+$IPTABLES -t mangle -A PREROUTING -j CLASH
+$IPTABLES -t mangle -A OUTPUT -j CLASH_LOCAL
+$IPTABLES -t mangle -I PREROUTING -p tcp -m socket -j DIVERT

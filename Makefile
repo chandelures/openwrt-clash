@@ -29,7 +29,13 @@ define Package/$(PKG_NAME)
 	SECTION:=net
 	CATEGORY:=Network
 	URL:=https://github.com/dreamacro/clash
-	DEPENDS:=$(GO_ARCH_DEPENDS)
+	DEPENDS:=$(GO_ARCH_DEPENDS) \
+		+procd-ujail \
+		+iptables \
+		+iptables-mod-extra \
+		+iptables-mod-tproxy \
+		+dnsmasq 
+	USERID:=clash=7890:clash=7890
 endef
 
 define Package/$(PKG_NAME)/description
@@ -85,6 +91,15 @@ ifdef CONFIG_PACKAGE_CLASH_INCLUDE_COUNTRY_MMDB
 	$(INSTALL_DIR) $(1)/etc/clash/
 	$(INSTALL_DATA) $(DL_DIR)/$(COUNTRY_MMDB_FILE) $(1)/etc/clash/Country.mmdb
 endif
+
+	$(INSTALL_DIR) $(1)/etc/uci-defaults/
+	$(INSTALL_BIN) $(CURDIR)/files/clash.defaults $(1)/etc/uci-defaults/clash
+
+	$(INSTALL_DIR) $(1)/usr/share/clash/
+	$(INSTALL_BIN) $(CURDIR)/files/firewall.include $(1)/usr/share/clash/firewall.include
+
+	$(INSTALL_DIR) $(1)/etc/capabilities/
+	$(INSTALL_BIN) $(CURDIR)/files/clash.capabilities $(1)/etc/capabilities/clash.json
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
