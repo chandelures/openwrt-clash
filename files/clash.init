@@ -10,130 +10,129 @@ CAP_FILE="/etc/capabilities/clash.json"
 DNSMASQ_RULE_FILE="/tmp/dnsmasq.d/clash.conf"
 
 if [ -e "$PID_FILE" ] && [ "$action" = "start" ]; then
-    exit 0
+	exit 0
 fi
 
 if [ ! -e "$PID_FILE" ] && [ "$action" = "stop" ]; then
-    exit 0
+	exit 0
 fi
 
-if [ ! -e "$PID_FILE" ] && { [ "$action" = "restart" ] \
-    || [ "$action" = "reload" ]; }
-then
-    action="start"
+if [ ! -e "$PID_FILE" ] && { [ "$action" = "restart" ] ||
+	[ "$action" = "reload" ]; }; then
+	action="start"
 fi
 
 restart_other_service() {
-    local service=$1
-    /etc/init.d/$service restart >/dev/null 2>&1
+	local service=$1
+	/etc/init.d/$service restart >/dev/null 2>&1
 }
 
 start_clash() {
-    config_load "$CONF"
+	config_load "$CONF"
 
-    local confdir
-    local conffile
-    local api_port
-    local api_host
+	local confdir
+	local conffile
+	local api_port
+	local api_host
 
-    local enabled
-    config_get_bool enabled "config" "enabled" "0"
+	local enabled
+	config_get_bool enabled "config" "enabled" "0"
 
-    [ "$enabled" -eq "0" ] && return 1
+	[ "$enabled" -eq "0" ] && return 1
 
-    config_get confdir "config" "confdir"
-    conffile="$confdir/config.yaml"
-    config_get api_host "config" "api_host"
-    config_get api_port "config" "api_port"
+	config_get confdir "config" "confdir"
+	conffile="$confdir/config.yaml"
+	config_get api_host "config" "api_host"
+	config_get api_port "config" "api_port"
 
-    procd_open_instance
-    procd_set_param command "$PROG"
-    [ -d "$confdir" ] && procd_append_param command -d "$confdir"
-    [ -n "$api_port" ] && procd_append_param command -ext-ctl "$api_host:$api_port"
-    procd_set_param file "$conffile"
-    procd_set_param stdout 1
-    procd_set_param stderr 1
-    procd_set_param respawn
-    procd_set_param pidfile "$PID_FILE"
-    procd_add_jail "$CONF"
-    procd_set_param capabilities "$CAP_FILE"
-    procd_set_param user "clash"
-    procd_set_param no_new_privs 1
-    procd_close_instance
+	procd_open_instance
+	procd_set_param command "$PROG"
+	[ -d "$confdir" ] && procd_append_param command -d "$confdir"
+	[ -n "$api_port" ] && procd_append_param command -ext-ctl "$api_host:$api_port"
+	procd_set_param file "$conffile"
+	procd_set_param stdout 1
+	procd_set_param stderr 1
+	procd_set_param respawn
+	procd_set_param pidfile "$PID_FILE"
+	procd_add_jail "$CONF"
+	procd_set_param capabilities "$CAP_FILE"
+	procd_set_param user "clash"
+	procd_set_param no_new_privs 1
+	procd_close_instance
 }
 
 enable_firewall_include() {
-    uci_set "firewall" "clash" "enabled" "1"
-    uci_commit "firewall"
-    restart_other_service "firewall"
+	uci_set "firewall" "clash" "enabled" "1"
+	uci_commit "firewall"
+	restart_other_service "firewall"
 }
 
 disable_firewall_include() {
-    uci_set "firewall" "clash" "enabled" "0"
-    uci_commit "firewall"
-    restart_other_service "firewall"
+	uci_set "firewall" "clash" "enabled" "0"
+	uci_commit "firewall"
+	restart_other_service "firewall"
 }
 
 create_routing_rule() {
-    local tproxy_mark="$1"
-    ip rule add fwmark "$tproxy_mark" table 100 2>/dev/null
-    ip route add local 0.0.0.0/0 dev lo table 100 2>/dev/null
+	local tproxy_mark="$1"
+	ip rule add fwmark "$tproxy_mark" table 100 2>/dev/null
+	ip route add local 0.0.0.0/0 dev lo table 100 2>/dev/null
 }
 
 clear_routing_rule() {
-    local tproxy_mark="$1"
-    ip rule del fwmark "$tproxy_mark" table 100 2>/dev/null
-    ip route del local 0.0.0.0/0 dev lo table 100 2>/dev/null
+	local tproxy_mark="$1"
+	ip rule del fwmark "$tproxy_mark" table 100 2>/dev/null
+	ip route del local 0.0.0.0/0 dev lo table 100 2>/dev/null
 }
 
 create_dnsmasq_rule() {
-    local dns_host="$1"
-    local dns_port="$2"
-    echo "strict-order" >>$DNSMASQ_RULE_FILE
-    echo "server=$dns_host#$dns_port" >>$DNSMASQ_RULE_FILE
-    restart_other_service "dnsmasq"
+	local dns_host="$1"
+	local dns_port="$2"
+	echo "strict-order" >>$DNSMASQ_RULE_FILE
+	echo "server=$dns_host#$dns_port" >>$DNSMASQ_RULE_FILE
+	restart_other_service "dnsmasq"
 }
 
 clear_dnsmasq_rule() {
-    rm -f $DNSMASQ_RULE_FILE
-    restart_other_service "dnsmasq"
+	rm -f $DNSMASQ_RULE_FILE
+	restart_other_service "dnsmasq"
 }
 
 start_service() {
-    config_load "$CONF"
+	config_load "$CONF"
 
-    local tproxy_enabled tporxy_mark
-    local dns_host dns_port
+	local tproxy_enabled tporxy_mark
+	local dns_host dns_port
 
-    config_get_bool tproxy_enabled "config" "tproxy_enabled"
-    config_get tproxy_mark "config" "tproxy_mark" "1"
-    config_get dns_host "config" "dns_host"
-    config_get dns_port "config" "dns_port"
+	config_get_bool tproxy_enabled "config" "tproxy_enabled"
+	config_get tproxy_mark "config" "tproxy_mark" "1"
+	config_get dns_host "config" "dns_host"
+	config_get dns_port "config" "dns_port"
 
-    if [ "$action" = "start" ] && [ "$tproxy_enabled" -eq 1 ]; then
-        clear_routing_rule "$tproxy_mark"
-        disable_firewall_include
-        create_routing_rule "$tproxy_mark"
-        enable_firewall_include
-        create_dnsmasq_rule "$dns_host" "$dns_port"
-    fi
+	if [ "$action" = "start" ] && [ "$tproxy_enabled" -eq 1 ]; then
+		clear_routing_rule "$tproxy_mark"
+		disable_firewall_include
+		create_routing_rule "$tproxy_mark"
+		enable_firewall_include
+		create_dnsmasq_rule "$dns_host" "$dns_port"
+	fi
 
-    start_clash
+	start_clash
 }
 
 stop_service() {
-    if [ "$action" = "stop" ]; then
-        clear_routing_rule "$tproxy_mark"
-        disable_firewall_include
-        clear_dnsmasq_rule
-    fi
+	if [ "$action" = "stop" ]; then
+		clear_routing_rule "$tproxy_mark"
+		disable_firewall_include
+		clear_dnsmasq_rule
+	fi
 }
 
 reload_service() {
-    stop
-    start
+	stop
+	start
 }
 
 service_triggers() {
-    procd_add_reload_trigger "$CONF"
+	procd_add_reload_trigger "$CONF"
 }
