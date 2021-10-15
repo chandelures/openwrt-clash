@@ -34,7 +34,8 @@ define Package/$(PKG_NAME)
 		+iptables \
 		+iptables-mod-extra \
 		+iptables-mod-tproxy \
-		+dnsmasq 
+		+dnsmasq \
+		+ca-bundle
 	USERID:=clash=7890:clash=7890
 endef
 
