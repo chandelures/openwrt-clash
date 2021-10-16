@@ -7,8 +7,8 @@ IPTABLES="/usr/sbin/iptables"
 
 config_load "$CONF"
 
-config_get tproxy_port "config" "tproxy_port"
-config_get tproxy_mark "config" "tproxy_mark" "1"
+config_get tproxy_port "global" "tproxy_port"
+config_get tproxy_mark "global" "tproxy_mark" "1"
 
 $IPTABLES -t mangle -N CLASH 2>/dev/null
 $IPTABLES -t mangle -N CLASH_LOCAL 2>/dev/null
