@@ -110,7 +110,7 @@ start_service() {
 	config_get dns_port "config" "dns_port"
 
 	if [ "$tproxy_enabled" -eq 1 ]; then
-		clear_routing_rule "$tproxy_mark"
+		clear_routing_rule 
 		disable_firewall_include
 		create_routing_rule "$tproxy_mark"
 		enable_firewall_include
@@ -122,7 +122,7 @@ start_service() {
 
 stop_service() {
 	if [ "$action" = "stop" ]; then
-		clear_routing_rule "$tproxy_mark"
+		clear_routing_rule
 		disable_firewall_include
 		clear_dnsmasq_rule
 	fi
