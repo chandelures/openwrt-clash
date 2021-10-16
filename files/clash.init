@@ -36,14 +36,14 @@ start_clash() {
 	local api_host
 
 	local enabled
-	config_get_bool enabled "config" "enabled" "0"
+	config_get_bool enabled "global" "enabled" "0"
 
 	[ "$enabled" -eq "0" ] && return 1
 
-	config_get confdir "config" "confdir"
+	config_get confdir "global" "confdir"
 	conffile="$confdir/config.yaml"
-	config_get api_host "config" "api_host"
-	config_get api_port "config" "api_port"
+	config_get api_host "global" "api_host"
+	config_get api_port "global" "api_port"
 
 	procd_open_instance
 	procd_set_param command "$PROG"
@@ -104,10 +104,10 @@ start_service() {
 	local tproxy_enabled tporxy_mark
 	local dns_host dns_port
 
-	config_get_bool tproxy_enabled "config" "tproxy_enabled"
-	config_get tproxy_mark "config" "tproxy_mark" "1"
-	config_get dns_host "config" "dns_host"
-	config_get dns_port "config" "dns_port"
+	config_get_bool tproxy_enabled "global" "tproxy_enabled"
+	config_get tproxy_mark "global" "tproxy_mark" "1"
+	config_get dns_host "dns" "host"
+	config_get dns_port "dns" "port"
 
 	if [ "$tproxy_enabled" -eq 1 ]; then
 		clear_routing_rule "$tproxy_mark"
