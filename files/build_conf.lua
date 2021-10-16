@@ -36,8 +36,33 @@ end
 
 local function general()
     local tproxy_enabled = ucursor:get_bool(config, "global", "tproxy_enabled")
+    local http_port = ucursor:get(config, "global", "http_port")
+    local socks_port = ucursor:get(config, "global", "socks_port")
+    local mixed_port = ucursor:get(config, "global", "mixed_port")
+    local allow_lan = ucursor:get_bool(config, "global", "allow_lan")
+    local bind_addr = ucursor:get(config, "global", "bind_addr")
+    local mode = ucursor:get(config, "global", "mode")
+    local log_level = ucursor:get(config, "global", "log_level")
     local api_host = ucursor:get(config, "global", "api_host")
     local api_port = ucursor:get(config, "global", "api_port")
+
+    if tonumber(http_port) then
+        profile["port"] = tonumber(http_port)
+    else
+        profile["port"] = nil
+    end
+
+    if tonumber(socks_port) then
+        profile["socks-port"] = tonumber(socks_port)
+    else
+        profile["socks-port"] = nil
+    end
+
+    if tonumber(mixed_port) then
+        profile["mixed-port"] = tonumber(mixed_port)
+    else
+        profile["mixed-port"] = nil
+    end
 
     if tproxy_enabled then
         local tproxy_port = ucursor:get(config, "global", "tproxy_port")
@@ -47,21 +72,34 @@ local function general()
     end
 
     profile["redir-port"] = nil
-    profile["external-controller"] = api_host .. ":" .. api_port
+
+    profile["allow-lan"] = allow_lan
+    if allow_lan then
+        profile["bind_addr"] = bind_addr
+    end
+
+    profile["mode"] = mode
+    profile["log-level"] = log_level
     profile["ipv6"] = false
+    profile["external-controller"] = api_host .. ":" .. api_port
+    profile["interface-name"] = nil
 end
 
 local function dns()
     local dns_host = ucursor:get(config, "dns", "host")
     local dns_port = ucursor:get(config, "dns", "port")
+    local default_nameserver = ucursor:get(config, "dns", "default_nameserver")
+    local nameserver = ucursor:get_list(config, "dns", "nameserver")
+    local fallback = ucursor:get_list(config, "dns", "fallback")
 
     local profile_dns = {}
     profile_dns["enable"] = true
     profile_dns["ipv6"] = false
     profile_dns["enhanced-mode"] = "redir-host"
     profile_dns["listen"] = dns_host .. ":" .. dns_port
-    profile_dns["nameserver"] = {"114.114.114.114"}
-    profile_dns["fallback"] = {"https://1.1.1.1/dns-query"}
+    profile_dns["default-nameserver"] = { default_nameserver }
+    profile_dns["nameserver"] = nameserver
+    profile_dns["fallback"] = fallback
     profile["dns"] = profile_dns
 end
 
