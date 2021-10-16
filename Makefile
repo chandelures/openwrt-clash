@@ -34,6 +34,7 @@ define Package/$(PKG_NAME)
 		+iptables \
 		+iptables-mod-extra \
 		+iptables-mod-tproxy \
+		+lyaml \
 		+ca-bundle
 	USERID:=clash=7890:clash=7890
 endef
@@ -97,6 +98,7 @@ endif
 
 	$(INSTALL_DIR) $(1)/usr/share/clash/
 	$(INSTALL_BIN) $(CURDIR)/files/firewall.include $(1)/usr/share/clash/firewall.include
+	$(INSTALL_BIN) $(CURDIR)/files/build_conf.lua $(1)/usr/share/clash/build_conf.lua
 
 	$(INSTALL_DIR) $(1)/etc/capabilities/
 	$(INSTALL_BIN) $(CURDIR)/files/clash.capabilities $(1)/etc/capabilities/clash.json
