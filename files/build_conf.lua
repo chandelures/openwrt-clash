@@ -53,7 +53,7 @@ local function general()
     end
 
     if tonumber(socks_port) then
-        profile["socks-port"] = tonumber(http_port)
+        profile["socks-port"] = tonumber(socks_port)
     else
         profile["socks-port"] = nil
     end
