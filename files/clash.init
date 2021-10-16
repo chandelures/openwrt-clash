@@ -35,7 +35,6 @@ start_clash() {
 	local conffile
 	local api_port
 	local api_host
-	local current_profile profile_dir
 
 	local enabled
 	config_get_bool enabled "global" "enabled" "0"

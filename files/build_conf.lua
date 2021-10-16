@@ -2,7 +2,6 @@
 
 local lyaml = require "lyaml"
 local ucursor = require "luci.model.uci"
-local sys = require("luci.sys")
 
 local config = "clash"
 local yamlext = ".yaml"
