@@ -1,13 +1,15 @@
 #!/usr/bin/lua
 
 local lyaml = require "lyaml"
-local ucursor = require "luci.model.uci"
+local uci = require "uci"
+
+local x = uci.cursor()
 
 local config = "clash"
 local yamlext = ".yaml"
 
-local profile_dir = ucursor:get(config, "global", "profile_dir")
-local current_profile = ucursor:get(config, "global", "current_profile")
+local profile_dir = x:get(config, "global", "profile_dir")
+local current_profile = x:get(config, "global", "current_profile")
 
 local profile = {}
 
@@ -35,37 +37,37 @@ local function load_origin()
 end
 
 local function general()
-    local tproxy_enabled = ucursor:get_bool(config, "global", "tproxy_enabled")
-    local http_port = ucursor:get(config, "global", "http_port")
-    local socks_port = ucursor:get(config, "global", "socks_port")
-    local mixed_port = ucursor:get(config, "global", "mixed_port")
-    local allow_lan = ucursor:get_bool(config, "global", "allow_lan")
-    local bind_addr = ucursor:get(config, "global", "bind_addr")
-    local mode = ucursor:get(config, "global", "mode")
-    local log_level = ucursor:get(config, "global", "log_level")
-    local api_host = ucursor:get(config, "global", "api_host")
-    local api_port = ucursor:get(config, "global", "api_port")
+    local tproxy_enabled = x:get(config, "global", "tproxy_enabled")
+    local http_port = x:get(config, "global", "http_port")
+    local socks_port = x:get(config, "global", "socks_port")
+    local mixed_port = x:get(config, "global", "mixed_port")
+    local allow_lan = x:get(config, "global", "allow_lan")
+    local bind_addr = x:get(config, "global", "bind_addr")
+    local mode = x:get(config, "global", "mode")
+    local log_level = x:get(config, "global", "log_level")
+    local api_host = x:get(config, "global", "api_host")
+    local api_port = x:get(config, "global", "api_port")
 
-    if tonumber(http_port) then
+    if tonumber(http_port) ~= 0 then
         profile["port"] = tonumber(http_port)
     else
         profile["port"] = nil
     end
 
-    if tonumber(socks_port) then
+    if tonumber(socks_port) ~= 0 then
         profile["socks-port"] = tonumber(socks_port)
     else
         profile["socks-port"] = nil
     end
 
-    if tonumber(mixed_port) then
+    if tonumber(mixed_port) ~= 0 then
         profile["mixed-port"] = tonumber(mixed_port)
     else
         profile["mixed-port"] = nil
     end
 
-    if tproxy_enabled then
-        local tproxy_port = ucursor:get(config, "global", "tproxy_port")
+    if tonumber(tproxy_enabled) == 1 then
+        local tproxy_port = x:get(config, "global", "tproxy_port")
         profile["tproxy-port"] = tonumber(tproxy_port)
     else
         profile["tproxy-port"] = nil
@@ -73,9 +75,12 @@ local function general()
 
     profile["redir-port"] = nil
 
-    profile["allow-lan"] = allow_lan
-    if allow_lan then
-        profile["bind_addr"] = bind_addr
+    if tonumber(allow_lan) == 1 then
+        profile["allow-lan"] = true
+        profile["bind-address"] = bind_addr
+    else
+        profile["allow-lan"] = false
+        profile["bind-address"] = nil
     end
 
     profile["mode"] = mode
@@ -86,11 +91,11 @@ local function general()
 end
 
 local function dns()
-    local dns_host = ucursor:get(config, "dns", "host")
-    local dns_port = ucursor:get(config, "dns", "port")
-    local default_nameserver = ucursor:get(config, "dns", "default_nameserver")
-    local nameserver = ucursor:get_list(config, "dns", "nameserver")
-    local fallback = ucursor:get_list(config, "dns", "fallback")
+    local dns_host = x:get(config, "dns", "host")
+    local dns_port = x:get(config, "dns", "port")
+    local default_nameserver = x:get(config, "dns", "default_nameserver")
+    local nameserver = x:get(config, "dns", "nameserver")
+    local fallback = x:get(config, "dns", "fallback")
 
     local profile_dns = {}
     profile_dns["enable"] = true
@@ -104,7 +109,7 @@ local function dns()
 end
 
 local function build()
-    local confdir = ucursor:get(config, "global", "confdir")
+    local confdir = x:get(config, "global", "confdir")
     local confpath = confdir .. "/config.yaml"
     local file = io.open(confpath, "w")
     file:write(lyaml.dump({profile}))
