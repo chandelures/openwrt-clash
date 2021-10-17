@@ -14,16 +14,40 @@ This repository is the clash package based on
 - Most features of open source clash core
 - Transparent proxy support
 - Forwarding DNS query to clash core
-- (optional) Clash geoip support
-- (optional) Clash dashboard support
+- (Optional) Clash geoip support
+- (Optional) Clash dashboard support
 
 ## Build
 
-You should use the Openwrt source code or SDK to build the package.
+1. First, You should download the Openwrt Source Code or SDK as the basic enviroment
+  to build the package.
 
 ```shell
-$ git clone https://github.com/chandelures/openwrt-clash package/openwrt-clash
 
+$ git clone https://github.com/openwrt/openwrt
+
+$ cd openwrt
+```
+
+or download openwrt sdk from https://downloads.openwrt.org/
+
+```shell
+$ tar -Jxvf openwrt-sdk_*.tar.xz
+
+$ cd openwrt-sdk_*
+```
+
+2. Prepare build environment
+
+```shell
+$ ./scripts/feeds update -a
+$ ./scripts/feeds install -a
+$ git clone https://github.com/chandelures/openwrt-clash package/openwrt-clash
+```
+
+3. Choice clash as a module or built-in module
+
+```shell
 $ make menuconfig
 
 Network  --->
@@ -31,7 +55,11 @@ Network  --->
         Clash Configuration  --->
             [*] Include Country.mmdb
     < > clash-dashboard
+```
 
+4. Building the package
+
+```shell
 $ make package/openwrt-clash/{clean,compile} V=s
 ```
 
