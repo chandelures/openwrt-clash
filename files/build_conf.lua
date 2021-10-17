@@ -7,10 +7,10 @@ local x = uci.cursor()
 
 local config = "clash"
 local yamlext = ".yaml"
+local confdir = "/etc/clash"
+local profile_dir = "/etc/clash/profiles"
 
-local profile_dir = x:get(config, "global", "profile_dir")
 local current_profile = x:get(config, "global", "current_profile")
-local confdir = x:get(config, "global", "confdir")
 
 local profile = {}
 
@@ -28,6 +28,10 @@ local function profile_path()
 end
 
 local function fetch()
+    if path_exist(profile_dir) == false then
+        os.execute("mkdir -p " .. profile_dir)
+    end
+
     if path_exist(profile_path()) then
         return
     end
@@ -96,7 +100,7 @@ local function general()
     profile["ipv6"] = false
     profile["external-controller"] = api_host .. ":" .. api_port
 
-    if path_exist(confdir .. '/' .. external_ui) then
+    if path_exist(confdir .. "/" .. external_ui) then
         profile["external-ui"] = external_ui
     else
         profile["external-ui"] = nil
