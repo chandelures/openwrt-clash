@@ -6,9 +6,15 @@
 
 ## Description
 
-This repository is the clash binary package and optional Country.mmdb download support based on
+This repository is the clash package and optional Country.mmdb download support based on
 [Dreamacro/clash](https://github.com/Dreamacro/clash) and
 [Dreamacro/maxmind-geoip](https://github.com/Dreamacro/maxmind-geoip) for Openwrt.
+
+## Features
+
+- Most features of open source clash core
+- Transparent proxy support
+- Forwarding DNS query to clash core
 
 ## Build
 
@@ -29,4 +35,4 @@ $ make package/openwrt-clash/compile V=s
 
 ### Warning
 
-If any download error occurred, please try to run `export GOPROXY=https://goproxy.io` before building.
+If any download errors occurred, please try to run `export GOPROXY=https://goproxy.io` before building.
