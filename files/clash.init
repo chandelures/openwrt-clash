@@ -32,7 +32,7 @@ restart_other_service() {
 start_clash() {
 	config_load "$CONF"
 
-	local conffile
+	local conffile="$CONF_DIR/config.yaml"
 	local api_port
 	local api_host
 
@@ -41,7 +41,6 @@ start_clash() {
 
 	[ "$enabled" -eq "0" ] && return 1
 
-	conffile="$CONF_DIR/config.yaml"
 	config_get api_host "global" "api_host"
 	config_get api_port "global" "api_port"
 
@@ -51,7 +50,6 @@ start_clash() {
 	procd_set_param command "$PROG"
 	[ -d "$CONF_DIR" ] || mkdir "$CONF_DIR"
 	procd_append_param command -d "$CONF_DIR"
-	[ -n "$api_port" ] && procd_append_param command -ext-ctl "$api_host:$api_port"
 	procd_set_param file "$conffile"
 	procd_set_param stdout 1
 	procd_set_param stderr 1
