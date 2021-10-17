@@ -8,8 +8,8 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/Dreamacro/clash/tar.gz/v$(PKG_VERSION)?
 PKG_HASH:=18c2ef10df608392435a1277d3f2e256c65bec3662bf0a6c325f02be6deb4fce
 
-PKG_MAINTAINER:=chandelures <me@chandelure.com>
-PKG_LICENSE:=GPL-3.0
+PKG_MAINTAINER:=Chandelure Wang <me@chandelure.com>
+PKG_LICENSE:=GPL-3.0-only
 PKG_LICENSE_FILES:=LICENSE
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/clash-$(PKG_VERSION)
@@ -24,10 +24,14 @@ GO_PKG_LDFLAGS_X:= \
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/../feeds/packages/lang/golang/golang-package.mk
 
-define Package/$(PKG_NAME)
-	TITLE:=A rule-based tunnel in Go
+define Package/$(PKG_NAME)/template
 	SECTION:=net
 	CATEGORY:=Network
+endef
+
+define Package/$(PKG_NAME)
+	$(call Package/$(PKG_NAME)/template)
+	TITLE:=A rule-based tunnel in Go
 	URL:=https://github.com/dreamacro/clash
 	DEPENDS:=$(GO_ARCH_DEPENDS) \
 		+procd-ujail \
@@ -40,9 +44,21 @@ define Package/$(PKG_NAME)
 	USERID:=clash=7890:clash=7890
 endef
 
+define Package/clash-dashboard
+	$(call Package/$(PKG_NAME)/template)
+	TITLE:=Web Dashboard for Clash
+	URL:=https://github.com/dreamacro/clash-dashboard
+	DEPENDS:=$(PKG_NAME)
+	PKGARCH:=all
+endef
+
 define Package/$(PKG_NAME)/description
 	Clash, A rule based tunnel in Go, support VMess, Shadowsocks,
 	Trojan, Snell protocol for remote connections.
+endef
+
+define Package/clash-dashboard/description
+	Web Dashboard for Clash
 endef
 
 define Package/$(PKG_NAME)/config
@@ -105,4 +121,21 @@ endif
 	$(INSTALL_BIN) $(CURDIR)/files/clash.capabilities $(1)/etc/capabilities/clash.json
 endef
 
+define Package/clash-dashboard/install
+	$(INSTALL_DIR) $(1)/usr/share/clash/
+	git clone -b gh-pages https://github.com/Dreamacro/clash-dashboard $(1)/usr/share/clash/dashboard
+endef
+
+define Package/clash-dashboard/postinst
+	#!/bin/sh
+	ln -sf /usr/share/clash/dashboard /etc/clash/dashboard
+endef
+
+define Package/clash-dashboard/postrm
+	#!/bin/sh
+	rm -f /etc/clash/dashboard
+	rm -rf /usr/share/clash/dashboard
+endef
+
 $(eval $(call BuildPackage,$(PKG_NAME)))
+$(eval $(call BuildPackage,clash-dashboard))

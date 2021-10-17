@@ -6,22 +6,23 @@
 
 ## Description
 
-This repository is the clash package and optional Country.mmdb download support based on
-[Dreamacro/clash](https://github.com/Dreamacro/clash) and
-[Dreamacro/maxmind-geoip](https://github.com/Dreamacro/maxmind-geoip) for Openwrt.
+This repository is the clash package based on
+[Dreamacro/clash](https://github.com/Dreamacro/clash) for Openwrt.
 
 ## Features
 
 - Most features of open source clash core
 - Transparent proxy support
 - Forwarding DNS query to clash core
+- (optional) Clash geoip support
+- (optional) Clash dashboard support
 
 ## Build
 
 You should use the Openwrt source code or SDK to build the package.
 
 ```shell
-$ git clone https://github.com/chandelures/openwrt-clash
+$ git clone https://github.com/chandelures/openwrt-clash package/openwrt-clash
 
 $ make menuconfig
 
@@ -29,8 +30,9 @@ Network  --->
     <M> clash
         Clash Configuration  --->
             [*] Include Country.mmdb
+    < > clash-dashboard
 
-$ make package/openwrt-clash/compile V=s
+$ make package/openwrt-clash/{clean,compile} V=s
 ```
 
 ### Warning
