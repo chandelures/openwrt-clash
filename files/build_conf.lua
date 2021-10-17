@@ -37,10 +37,11 @@ local function load_origin()
 end
 
 local function general()
-    local tproxy_enabled = x:get(config, "global", "tproxy_enabled")
     local http_port = x:get(config, "global", "http_port")
     local socks_port = x:get(config, "global", "socks_port")
     local mixed_port = x:get(config, "global", "mixed_port")
+    local tproxy_enabled = x:get(config, "global", "tproxy_enabled")
+    local tproxy_port = x:get(config, "global", "tproxy_port")
     local allow_lan = x:get(config, "global", "allow_lan")
     local bind_addr = x:get(config, "global", "bind_addr")
     local mode = x:get(config, "global", "mode")
@@ -67,7 +68,6 @@ local function general()
     end
 
     if tonumber(tproxy_enabled) == 1 then
-        local tproxy_port = x:get(config, "global", "tproxy_port")
         profile["tproxy-port"] = tonumber(tproxy_port)
     else
         profile["tproxy-port"] = nil
