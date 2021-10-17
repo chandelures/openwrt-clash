@@ -10,17 +10,26 @@ local yamlext = ".yaml"
 
 local profile_dir = x:get(config, "global", "profile_dir")
 local current_profile = x:get(config, "global", "current_profile")
+local confdir = x:get(config, "global", "confdir")
 
 local profile = {}
+
+local function path_exist(path)
+    local file, err = io.open(path, "r")
+    if err == nil then
+        file:close()
+        return true
+    end
+    return false
+end
 
 local function profile_path()
     return profile_dir .. "/" .. current_profile .. yamlext
 end
 
 local function fetch()
-    local file, err = io.open(profile_path(), "r")
-    if err == nil then
-        return 0
+    if path_exist(profile_path()) then
+        return
     end
 
     file = io.open(profile_path(), "w")
@@ -29,11 +38,9 @@ local function fetch()
 end
 
 local function load_origin()
-    local file, err = io.open(profile_path(), "r")
-    if err == nil then
-        profile = lyaml.load(file:read("*a"), {all = true})[1]
-        file:close()
-    end
+    local file = io.open(profile_path(), "r")
+    profile = lyaml.load(file:read("*a"), {all = true})[1]
+    file:close()
 end
 
 local function general()
@@ -48,6 +55,7 @@ local function general()
     local log_level = x:get(config, "global", "log_level")
     local api_host = x:get(config, "global", "api_host")
     local api_port = x:get(config, "global", "api_port")
+    local external_ui = x:get(config, "global", "external_ui")
 
     if tonumber(http_port) ~= 0 then
         profile["port"] = tonumber(http_port)
@@ -87,6 +95,13 @@ local function general()
     profile["log-level"] = log_level
     profile["ipv6"] = false
     profile["external-controller"] = api_host .. ":" .. api_port
+
+    if path_exist(confdir .. '/' .. external_ui) then
+        profile["external-ui"] = external_ui
+    else
+        profile["external-ui"] = nil
+    end
+
     profile["interface-name"] = nil
 end
 
@@ -109,7 +124,6 @@ local function dns()
 end
 
 local function build()
-    local confdir = x:get(config, "global", "confdir")
     local confpath = confdir .. "/config.yaml"
     local file = io.open(confpath, "w")
     file:write(lyaml.dump({profile}))
