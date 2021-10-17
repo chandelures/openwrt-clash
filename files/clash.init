@@ -122,6 +122,9 @@ start_service() {
 }
 
 stop_service() {
+	config_load "$CONF"
+	config_get tproxy_mark "global" "tproxy_mark" "1"
+
 	if [ "$action" = "stop" ]; then
 		clear_routing_rule "$tproxy_mark"
 		disable_firewall_include
