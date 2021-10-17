@@ -11,7 +11,7 @@ This repository is the clash package based on
 
 ## Features
 
-- Most features of open source clash core
+- Most of the features of open-source clash core are supported
 - Transparent proxy support
 - Forwarding DNS query to clash core
 - (Optional) Clash geoip support
@@ -23,13 +23,12 @@ This repository is the clash package based on
   to build the package.
 
 ```shell
-
 $ git clone https://github.com/openwrt/openwrt
 
 $ cd openwrt
 ```
 
-or download openwrt sdk from https://downloads.openwrt.org/
+or download Openwrt SDK from https://downloads.openwrt.org/
 
 ```shell
 $ tar -Jxvf openwrt-sdk_*.tar.xz
@@ -41,11 +40,13 @@ $ cd openwrt-sdk_*
 
 ```shell
 $ ./scripts/feeds update -a
+
 $ ./scripts/feeds install -a
+
 $ git clone https://github.com/chandelures/openwrt-clash package/openwrt-clash
 ```
 
-3. Choice clash as a module or built-in module
+3. Choose clash as a module or built-in module
 
 ```shell
 $ make menuconfig
@@ -57,7 +58,7 @@ Network  --->
     < > clash-dashboard
 ```
 
-4. Building the package
+4. Build packages
 
 ```shell
 $ make package/openwrt-clash/{clean,compile} V=s
