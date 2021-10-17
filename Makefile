@@ -73,6 +73,7 @@ define Package/$(PKG_NAME)/config
 endef
 
 define Package/$(PKG_NAME)/conffiles
+/etc/clash/profiles/
 /etc/config/clash
 endef
 

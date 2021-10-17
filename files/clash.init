@@ -5,6 +5,7 @@ START=99
 
 CONF="clash"
 PROG="/usr/bin/clash"
+CONF_DIR="/etc/clash"
 BUILD_CONF_SCRIPT="/usr/share/clash/build_conf.lua"
 PID_FILE="/var/run/clash.pid"
 CAP_FILE="/etc/capabilities/clash.json"
@@ -31,8 +32,7 @@ restart_other_service() {
 start_clash() {
 	config_load "$CONF"
 
-	local confdir
-	local conffile
+	local conffile="$CONF_DIR/config.yaml"
 	local api_port
 	local api_host
 
@@ -41,8 +41,6 @@ start_clash() {
 
 	[ "$enabled" -eq "0" ] && return 1
 
-	config_get confdir "global" "confdir"
-	conffile="$confdir/config.yaml"
 	config_get api_host "global" "api_host"
 	config_get api_port "global" "api_port"
 
@@ -50,8 +48,8 @@ start_clash() {
 
 	procd_open_instance
 	procd_set_param command "$PROG"
-	[ -d "$confdir" ] && procd_append_param command -d "$confdir"
-	[ -n "$api_port" ] && procd_append_param command -ext-ctl "$api_host:$api_port"
+	[ -d "$CONF_DIR" ] || mkdir "$CONF_DIR"
+	procd_append_param command -d "$CONF_DIR"
 	procd_set_param file "$conffile"
 	procd_set_param stdout 1
 	procd_set_param stderr 1
