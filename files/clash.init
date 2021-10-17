@@ -19,7 +19,8 @@ if [ ! -e "$PID_FILE" ] && [ "$action" = "stop" ]; then
 	exit 0
 fi
 
-if [ ! -e "$PID_FILE" ] && [ "$action" = "restart" ]; then
+if [ ! -e "$PID_FILE" ] && { [ "$action" = "restart" ] ||
+	[ "$action" = "reload" ]; }; then
 	action="start"
 fi
 
@@ -112,7 +113,7 @@ start_service() {
 	config_get dns_port "dns" "port"
 
 	if [ "$tproxy_enabled" -eq 1 ]; then
-		clear_routing_rule "$tproxy_mark"
+		clear_routing_rule
 		create_routing_rule "$tproxy_mark"
 		enable_firewall_include
 		create_dnsmasq_rule "$dns_host" "$dns_port"
@@ -123,10 +124,15 @@ start_service() {
 
 stop_service() {
 	if [ "$action" = "stop" ]; then
-		clear_routing_rule "$tproxy_mark"
+		clear_routing_rule
 		disable_firewall_include
 		clear_dnsmasq_rule
 	fi
+}
+
+reload_service() {
+	stop
+	start
 }
 
 service_triggers() {
