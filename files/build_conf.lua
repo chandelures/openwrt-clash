@@ -102,7 +102,7 @@ local function dns()
     profile_dns["ipv6"] = false
     profile_dns["enhanced-mode"] = "redir-host"
     profile_dns["listen"] = dns_host .. ":" .. dns_port
-    profile_dns["default-nameserver"] = { default_nameserver }
+    profile_dns["default-nameserver"] = default_nameserver
     profile_dns["nameserver"] = nameserver
     profile_dns["fallback"] = fallback
     profile["dns"] = profile_dns
