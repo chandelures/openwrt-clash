@@ -110,11 +110,11 @@ local function general()
 end
 
 local function dns()
-    local dns_host = x:get(config, "dns", "host")
-    local dns_port = x:get(config, "dns", "port")
-    local default_nameserver = x:get(config, "dns", "default_nameserver")
-    local nameserver = x:get(config, "dns", "nameserver")
-    local fallback = x:get(config, "dns", "fallback")
+    local dns_host = x:get(config, "global", "dns_host")
+    local dns_port = x:get(config, "global", "dns_port")
+    local default_nameserver = x:get(config, "global", "default_nameserver")
+    local nameserver = x:get(config, "global", "nameserver")
+    local fallback = x:get(config, "global", "fallback")
 
     local profile_dns = {}
     profile_dns["enable"] = true
