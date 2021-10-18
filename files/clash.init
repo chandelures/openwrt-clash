@@ -108,8 +108,8 @@ start_service() {
 
 	config_get_bool tproxy_enabled "global" "tproxy_enabled"
 	config_get tproxy_mark "global" "tproxy_mark" "1"
-	config_get dns_host "dns" "host"
-	config_get dns_port "dns" "port"
+	config_get dns_host "global" "dns_host"
+	config_get dns_port "global" "dns_port"
 
 	if [ "$tproxy_enabled" -eq 1 ]; then
 		clear_routing_rule "$tproxy_mark"
