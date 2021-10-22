@@ -49,7 +49,14 @@ for addr in $(bypass_address); do
 	iptables_bypass_rule "CLASH_LOCAL" "$addr"
 done
 
-$IPTABLES -t mangle -I CLASH_LOCAL -m owner --uid-owner "clash" -j RETURN
+[ -x "/sbin/ujail" -a -e "$CAP_FILE" ] && {
+	$IPTABLES -t mangle -I CLASH_LOCAL -m owner --uid-owner "clash" -j RETURN
+	$IPTABLES -t mangle -A CLASH_LOCAL -p udp -j MARK \
+		--set-mark "$tproxy_mark"
+	$IPTABLES -t mangle -A CLASH_LOCAL -p tcp -j MARK \
+		--set-mark "$tproxy_mark"
+	$IPTABLES -t mangle -A OUTPUT -j CLASH_LOCAL
+}
 
 $IPTABLES -t mangle -A CLASH -p udp -j TPROXY \
 	--on-ip 127.0.0.1 --on-port "$tproxy_port" \
@@ -57,14 +64,9 @@ $IPTABLES -t mangle -A CLASH -p udp -j TPROXY \
 $IPTABLES -t mangle -A CLASH -p tcp -j TPROXY \
 	--on-ip 127.0.0.1 --on-port "$tproxy_port" \
 	--tproxy-mark "$tproxy_mark"
-$IPTABLES -t mangle -A CLASH_LOCAL -p udp -j MARK \
-	--set-mark "$tproxy_mark"
-$IPTABLES -t mangle -A CLASH_LOCAL -p tcp -j MARK \
-	--set-mark "$tproxy_mark"
 
 $IPTABLES -t mangle -A DIVERT -j MARK --set-mark $tproxy_mark
 $IPTABLES -t mangle -A DIVERT -j ACCEPT
 
 $IPTABLES -t mangle -A PREROUTING -j CLASH
-$IPTABLES -t mangle -A OUTPUT -j CLASH_LOCAL
 $IPTABLES -t mangle -I PREROUTING -p tcp -m socket -j DIVERT

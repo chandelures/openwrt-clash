@@ -34,7 +34,6 @@ define Package/$(PKG_NAME)
 	TITLE:=A rule-based tunnel in Go
 	URL:=https://github.com/dreamacro/clash
 	DEPENDS:=$(GO_ARCH_DEPENDS) \
-		+procd-ujail \
 		+iptables \
 		+iptables-mod-extra \
 		+iptables-mod-tproxy \

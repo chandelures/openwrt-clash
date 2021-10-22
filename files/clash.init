@@ -56,10 +56,14 @@ start_clash() {
 	procd_set_param stderr 1
 	procd_set_param respawn
 	procd_set_param pidfile "$PID_FILE"
-	procd_add_jail "$CONF"
-	procd_set_param capabilities "$CAP_FILE"
-	procd_set_param user "$user"
-	procd_set_param no_new_privs 1
+
+	[ -x "/sbin/ujail" -a -e "$CAP_FILE" ] && {
+		procd_add_jail "$CONF"
+		procd_set_param capabilities "$CAP_FILE"
+		procd_set_param user "$user"
+		procd_set_param no_new_privs 1
+	}
+
 	procd_close_instance
 }
 
