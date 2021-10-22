@@ -49,7 +49,7 @@ for addr in $(bypass_address); do
 	iptables_bypass_rule "CLASH_LOCAL" "$addr"
 done
 
-[ -x "/sbin/ujail" ] && {
+[ -x "/sbin/ujail" ] && (opkg list-installed | grep "iptables-mod-extra" >/dev/null) && {
 	$IPTABLES -t mangle -I CLASH_LOCAL -m owner --uid-owner "clash" -j RETURN
 	$IPTABLES -t mangle -A CLASH_LOCAL -p udp -j MARK \
 		--set-mark "$tproxy_mark"
