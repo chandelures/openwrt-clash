@@ -10,18 +10,12 @@ config_load "$CONF"
 config_get tproxy_port "global" "tproxy_port"
 config_get tproxy_mark "global" "tproxy_mark" "1"
 
-$IPTABLES -t mangle -N CLASH 2>/dev/null
-$IPTABLES -t mangle -N CLASH_LOCAL 2>/dev/null
-$IPTABLES -t mangle -N DIVERT 2>/dev/null
-
-iptables_bypass_rule() {
-	local chain=$1
-	local addr=$2
-
-	$IPTABLES -t mangle -A "$chain" -d "$addr" -j RETURN
+create_chains() {
+	$IPTABLES -t mangle -N CLASH 2>/dev/null
+	$IPTABLES -t mangle -N CLASH_LOCAL 2>/dev/null
 }
 
-bypass_address() {
+bypass_addresses() {
 	cat <<-EOF
 		0.0.0.0/8
 		10.0.0.0/8
@@ -44,12 +38,27 @@ bypass_address() {
 	EOF
 }
 
-for addr in $(bypass_address); do
-	iptables_bypass_rule "CLASH" "$addr"
-	iptables_bypass_rule "CLASH_LOCAL" "$addr"
-done
+iptables_bypass() {
+	local chain=$1
 
-[ -x "/sbin/ujail" ] && (opkg list-installed | grep "iptables-mod-extra" >/dev/null) && {
+	for addr in $(bypass_addresses); do
+		$IPTABLES -t mangle -A "$chain" -d "$addr" -j RETURN
+	done
+}
+
+tproxy_rules() {
+	iptables_bypass "CLASH"
+	$IPTABLES -t mangle -A CLASH -p udp -j TPROXY \
+		--on-ip 127.0.0.1 --on-port "$tproxy_port" \
+		--tproxy-mark "$tproxy_mark"
+	$IPTABLES -t mangle -A CLASH -p tcp -j TPROXY \
+		--on-ip 127.0.0.1 --on-port "$tproxy_port" \
+		--tproxy-mark "$tproxy_mark"
+	$IPTABLES -t mangle -A PREROUTING -j CLASH
+}
+
+local_rules() {
+	iptables_bypass "CLASH_LOCAL"
 	$IPTABLES -t mangle -I CLASH_LOCAL -m owner --uid-owner "clash" -j RETURN
 	$IPTABLES -t mangle -A CLASH_LOCAL -p udp -j MARK \
 		--set-mark "$tproxy_mark"
@@ -58,15 +67,10 @@ done
 	$IPTABLES -t mangle -A OUTPUT -j CLASH_LOCAL
 }
 
-$IPTABLES -t mangle -A CLASH -p udp -j TPROXY \
-	--on-ip 127.0.0.1 --on-port "$tproxy_port" \
-	--tproxy-mark "$tproxy_mark"
-$IPTABLES -t mangle -A CLASH -p tcp -j TPROXY \
-	--on-ip 127.0.0.1 --on-port "$tproxy_port" \
-	--tproxy-mark "$tproxy_mark"
+main() {
+	create_chains
+	tproxy_rules
+	[ -x "/sbin/ujail" ] && (opkg list-installed | grep "iptables-mod-extra" >/dev/null) && local_rules
+}
 
-$IPTABLES -t mangle -A DIVERT -j MARK --set-mark $tproxy_mark
-$IPTABLES -t mangle -A DIVERT -j ACCEPT
-
-$IPTABLES -t mangle -A PREROUTING -j CLASH
-$IPTABLES -t mangle -I PREROUTING -p tcp -m socket -j DIVERT
+main
