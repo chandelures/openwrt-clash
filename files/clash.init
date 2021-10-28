@@ -7,21 +7,8 @@ CONF="clash"
 PROG="/usr/bin/clash"
 CONF_DIR="/etc/clash"
 BUILD_CONF_SCRIPT="/usr/lib/clash/build_conf.lua"
-PID_FILE="/var/run/clash.pid"
 CAP_FILE="/etc/capabilities/clash.json"
 DNSMASQ_RULE_FILE="/tmp/dnsmasq.d/clash.conf"
-
-if [ -e "$PID_FILE" ] && [ "$action" = "start" ]; then
-	exit 0
-fi
-
-if [ ! -e "$PID_FILE" ] && [ "$action" = "stop" ]; then
-	exit 0
-fi
-
-if [ ! -e "$PID_FILE" ] && [ "$action" = "restart" ]; then
-	action="start"
-fi
 
 restart_other_service() {
 	local service=$1
@@ -55,7 +42,6 @@ start_clash() {
 	procd_set_param stdout 1
 	procd_set_param stderr 1
 	procd_set_param respawn
-	procd_set_param pidfile "$PID_FILE"
 
 	[ -x "/sbin/ujail" -a -e "$CAP_FILE" ] && {
 		procd_add_jail "$CONF"
@@ -115,25 +101,29 @@ start_service() {
 	config_get dns_host "global" "dns_host"
 	config_get dns_port "global" "dns_port"
 
+	clear_routing_rule "$tproxy_mark"
+	create_routing_rule "$tproxy_mark"
+
+	start_clash
+
 	if [ "$tproxy_enabled" -eq 1 ]; then
-		clear_routing_rule "$tproxy_mark"
-		create_routing_rule "$tproxy_mark"
 		enable_firewall_include
 		create_dnsmasq_rule "$dns_host" "$dns_port"
 	fi
-
-	start_clash
 }
 
 stop_service() {
 	config_load "$CONF"
 	config_get tproxy_mark "global" "tproxy_mark" "1"
 
-	if [ "$action" = "stop" ]; then
-		clear_routing_rule "$tproxy_mark"
-		disable_firewall_include
-		clear_dnsmasq_rule
-	fi
+	clear_routing_rule "$tproxy_mark"
+	disable_firewall_include
+	clear_dnsmasq_rule
+}
+
+reload_service() {
+	stop
+	start
 }
 
 service_triggers() {
