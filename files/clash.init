@@ -88,25 +88,24 @@ clear_dnsmasq_rule() {
 start_service() {
 	config_load "$CONF"
 
-	clear_routing_rule "$tproxy_mark"
-	create_routing_rule "$tproxy_mark"
-
 	local enabled
-	config_get_bool enabled "global" "enabled" "0"
-
-	[ "$enabled" -eq "0" ] && return 1
-
-	local tproxy_enabled tporxy_mark
 	local dns_host dns_port
+	local tproxy_enabled tporxy_mark
 
+	config_get_bool enabled "global" "enabled" "0"
 	config_get_bool tproxy_enabled "global" "tproxy_enabled"
 	config_get tproxy_mark "global" "tproxy_mark" "1"
 	config_get dns_host "global" "dns_host"
 	config_get dns_port "global" "dns_port"
 
+	clear_routing_rule "$tproxy_mark"
+
+	[ "$enabled" -eq "0" ] && return 1
+
 	start_clash
 
 	if [ "$tproxy_enabled" -eq 1 ]; then
+		create_routing_rule "$tproxy_mark"
 		enable_firewall_include
 		create_dnsmasq_rule "$dns_host" "$dns_port"
 	fi
