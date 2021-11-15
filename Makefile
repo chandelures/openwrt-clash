@@ -85,12 +85,26 @@ define Download/country_mmdb
 	HASH:=4c9535085fca950d1a2ebda9c1f625947971e98e4dc1a93cf7800a44dbb7ba5b
 endef
 
+YACD_DASHBOARD_VER=0.3.4
+
+define Download/clash-dashboard
+	URL:=https://github.com/haishanh/yacd/releases/download/$(YACD_DASHBOARD_VER)/
+	URL_FILE:=yacd.tar.xz
+	FILE:=yacd.tar.xz
+	HASH:=c24683776ff1d16ce66ef64fc86b47c1254046ded3432e8d2387d0b6c6e50193
+endef
+
 define Build/Prepare
 	$(call Build/Prepare/Default)
 
 ifdef CONFIG_PACKAGE_CLASH_INCLUDE_COUNTRY_MMDB
 	$(call Download,country_mmdb)
 endif
+
+ifdef CONFIG_PACKAGE_clash-dashboard
+	$(call Download,clash-dashboard)
+endif
+
 endef
 
 define Package/$(PKG_NAME)/install
@@ -123,19 +137,18 @@ endif
 endef
 
 define Package/clash-dashboard/install
-	$(INSTALL_DIR) $(1)/usr/share/clash/
-	git clone -b gh-pages https://github.com/Dreamacro/clash-dashboard $(1)/usr/share/clash/dashboard
-endef
-
-define Package/clash-dashboard/postinst
-	#!/bin/sh
-	ln -sf /usr/share/clash/dashboard /etc/clash/dashboard
-endef
-
-define Package/clash-dashboard/postrm
-	#!/bin/sh
-	rm -f /etc/clash/dashboard
-	rm -rf /usr/share/clash/dashboard
+	$(INSTALL_DIR) $(1)/www/clash-dashboard/
+	$(TAR) -C $(DL_DIR) -Jxvf $(DL_DIR)/yacd.tar.xz
+	$(CP) \
+		$(DL_DIR)/public/assets \
+		$(DL_DIR)/public/index.html \
+		$(DL_DIR)/public/registerSW.js \
+		$(DL_DIR)/public/sw.js \
+		$(DL_DIR)/public/yacd-128.png \
+		$(DL_DIR)/public/yacd-64.png \
+		$(DL_DIR)/public/yacd.ico \
+		$(DL_DIR)/public/_headers \
+		$(1)/www/clash-dashboard/
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
