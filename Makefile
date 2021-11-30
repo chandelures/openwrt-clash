@@ -88,7 +88,7 @@ endef
 YACD_DASHBOARD_VER=0.3.4
 
 define Download/clash-dashboard
-	URL:=https://github.com/haishanh/yacd/releases/download/$(YACD_DASHBOARD_VER)/
+	URL:=https://github.com/haishanh/yacd/releases/download/v$(YACD_DASHBOARD_VER)/
 	URL_FILE:=yacd.tar.xz
 	FILE:=yacd.tar.xz
 	HASH:=c24683776ff1d16ce66ef64fc86b47c1254046ded3432e8d2387d0b6c6e50193
