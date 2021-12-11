@@ -109,6 +109,7 @@ local function update_dns(profile)
     profile_dns["enable"] = true
     profile_dns["ipv6"] = false
     profile_dns["enhanced-mode"] = dns_mode
+    profile_dns["fake-ip-range"] = "198.18.0.1/16"
     profile_dns["listen"] = dns_host .. ":" .. dns_port
     profile_dns["default-nameserver"] = default_nameserver
     profile_dns["nameserver"] = nameserver
