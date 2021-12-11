@@ -100,6 +100,7 @@ end
 local function update_dns(profile)
     local dns_host = get("global", "dns_host")
     local dns_port = get_number("global", "dns_port")
+    local dns_mode = get("global", "dns_mode")
     local default_nameserver = get("global", "default_nameserver")
     local nameserver = get("global", "nameserver")
     local fallback = get("global", "fallback")
@@ -107,11 +108,15 @@ local function update_dns(profile)
     local profile_dns = {}
     profile_dns["enable"] = true
     profile_dns["ipv6"] = false
-    profile_dns["enhanced-mode"] = "redir-host"
+    profile_dns["enhanced-mode"] = dns_mode
     profile_dns["listen"] = dns_host .. ":" .. dns_port
     profile_dns["default-nameserver"] = default_nameserver
     profile_dns["nameserver"] = nameserver
-    profile_dns["fallback"] = fallback
+    if dns_mode == "redir-host" then
+        profile_dns["fallback"] = fallback
+    else
+        profile_dns["fallback"] = nil
+    end
 
     profile["dns"] = profile_dns
 end
@@ -119,7 +124,6 @@ end
 local function drop_useless(profile)
     profile["redir-port"] = nil
     profile["external-ui"] = nil
-    profile["profile"] = nil
     profile["ipv6"] = false
 end
 
