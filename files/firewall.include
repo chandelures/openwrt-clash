@@ -81,7 +81,7 @@ local_rules() {
 main() {
 	create_chains
 	tproxy_rules
-	[ -x "/sbin/ujail" ] && (opkg list-installed | grep "iptables-mod-extra" >/dev/null) && local_rules || 0
+	[ -x "/sbin/ujail" ] && (opkg list-installed | grep "iptables-mod-extra" >/dev/null) && local_rules
 }
 
 main
