@@ -23,7 +23,7 @@ This repository is the clash package based on
 ## Build
 
 1. First, You should download the Openwrt Source Code or SDK as the basic enviroment
-  to build the package.
+   to build the package.
 
 ```shell
 $ git clone https://github.com/openwrt/openwrt
@@ -66,7 +66,3 @@ Network  --->
 ```shell
 $ make package/openwrt-clash/{clean,compile} V=s
 ```
-
-### Warning
-
-If any download errors occurred, please try to run `export GOPROXY=https://goproxy.io` before building.
