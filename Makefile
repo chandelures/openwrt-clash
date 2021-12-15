@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=clash
 PKG_VERSION:=1.8.0
-PKG_RELEASE:=$(AUTORELEASE)
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/Dreamacro/clash/tar.gz/v$(PKG_VERSION)?
@@ -75,14 +75,14 @@ define Package/$(PKG_NAME)/conffiles
 /etc/config/clash
 endef
 
-COUNTRY_MMDB_VER=20211112
+COUNTRY_MMDB_VER=20211212
 COUNTRY_MMDB_FILE:=Country.$(COUNTRY_MMDB_VER).mmdb
 
 define Download/country_mmdb
 	URL:=https://github.com/Dreamacro/maxmind-geoip/releases/download/$(COUNTRY_MMDB_VER)/
 	URL_FILE:=Country.mmdb
 	FILE:=$(COUNTRY_MMDB_FILE)
-	HASH:=4c9535085fca950d1a2ebda9c1f625947971e98e4dc1a93cf7800a44dbb7ba5b
+	HASH:=79c666f2863a538dd51d9e4f017a37a5a7f17f1640c2dc3bb15f9b4c4280f99a
 endef
 
 YACD_DASHBOARD_VER=0.3.4
