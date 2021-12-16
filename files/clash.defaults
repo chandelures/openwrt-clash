@@ -5,7 +5,7 @@ uci -q batch <<-EOF
 	set firewall.clash=include
 	set firewall.clash.type=script
 	set firewall.clash.path=/usr/share/clash/firewall.include
-	set firewall.clash.reload=1
+	set firewall.clash.reload=0
 	set firewall.clash.enabled=0
 	commit firewall
 EOF
