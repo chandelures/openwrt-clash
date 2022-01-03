@@ -101,6 +101,7 @@ local function update_dns(profile)
     local dns_host = get("global", "dns_host")
     local dns_port = get_number("global", "dns_port")
     local dns_mode = get("global", "dns_mode")
+    local fake_ip_range = get("global", "fake_ip_range")
     local default_nameserver = get("global", "default_nameserver")
     local nameserver = get("global", "nameserver")
     local fallback = get("global", "fallback")
@@ -109,7 +110,7 @@ local function update_dns(profile)
     profile_dns["enable"] = true
     profile_dns["ipv6"] = false
     profile_dns["enhanced-mode"] = dns_mode
-    profile_dns["fake-ip-range"] = "198.18.0.1/16"
+    profile_dns["fake-ip-range"] = fake_ip_range
     profile_dns["listen"] = dns_host .. ":" .. dns_port
     profile_dns["default-nameserver"] = default_nameserver
     profile_dns["nameserver"] = nameserver
