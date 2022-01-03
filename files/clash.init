@@ -9,6 +9,10 @@ BUILD_CONF_SCRIPT="/usr/lib/clash/build_conf.lua"
 CAP_FILE="/etc/capabilities/clash.json"
 DNSMASQ_RULE_FILE="/tmp/dnsmasq.d/clash.conf"
 
+msg() {
+	logger -p daemon.info -st "$CONF[$$]" "$*"
+}
+
 restart_other_service() {
 	local service=$1
 	/etc/init.d/$service restart >/dev/null 2>&1
@@ -50,30 +54,35 @@ start_clash() {
 }
 
 enable_firewall_include() {
+	msg "Appling firewall rules and restarting firewall service"
 	uci_set "firewall" "clash" "enabled" "1"
 	uci_commit "firewall"
 	restart_other_service "firewall"
 }
 
 disable_firewall_include() {
+	msg "Removing firewall rules and restarting firewall service"
 	uci_set "firewall" "clash" "enabled" "0"
 	uci_commit "firewall"
 	restart_other_service "firewall"
 }
 
 create_routing_rule() {
+	msg "Appling route rules"
 	local tproxy_mark="$1"
 	ip rule add fwmark "$tproxy_mark" table 100 2>/dev/null
 	ip route add local 0.0.0.0/0 dev lo table 100 2>/dev/null
 }
 
 clear_routing_rule() {
+	msg "Removing route rules"
 	local tproxy_mark="$1"
 	ip rule del fwmark "$tproxy_mark" table 100 2>/dev/null
 	ip route del local 0.0.0.0/0 dev lo table 100 2>/dev/null
 }
 
 create_dnsmasq_rule() {
+	msg "Appling dnsmasq rules and restarting dnsmasq service"
 	local dns_host="$1"
 	local dns_port="$2"
 	echo "strict-order" >$DNSMASQ_RULE_FILE
@@ -82,6 +91,7 @@ create_dnsmasq_rule() {
 }
 
 clear_dnsmasq_rule() {
+	msg "Removing dnsmasq rules and restarting dnsmasq service"
 	rm -f $DNSMASQ_RULE_FILE
 	restart_other_service "dnsmasq"
 }
@@ -101,11 +111,12 @@ start_service() {
 
 	clear_routing_rule "$tproxy_mark"
 
-	[ "$enabled" -eq "0" ] && return 1
+	[ "$enabled" -eq "1" ] || { msg "Instance is disabled"; return 1; }
 
 	start_clash
 
 	if [ "$tproxy_enabled" -eq 1 ]; then
+		msg "Transparent proxy is enabled"
 		create_routing_rule "$tproxy_mark"
 		enable_firewall_include
 		create_dnsmasq_rule "$dns_host" "$dns_port"
