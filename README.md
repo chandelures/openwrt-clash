@@ -9,6 +9,8 @@
 This repository is the clash package based on
 [Dreamacro/clash](https://github.com/Dreamacro/clash) for Openwrt.
 
+The LuCI support is on the https://github.com/chandelures/luci-app-simple-clash.
+
 - If you want to run clash as a non-root user, please install `procd-ujail`.
 - If you want to setup transparent proxy on the gateway, please install `procd-ujail` and `iptables-mod-extra`.
 
