@@ -4,6 +4,8 @@
   <br>Openwrt Clash<br>
 </h1>
 
+[![build](https://github.com/chandelures/openwrt-clash/actions/workflows/build.yml/badge.svg)](https://github.com/chandelures/openwrt-clash/actions)
+
 ## Description
 
 This repository is the clash package based on
