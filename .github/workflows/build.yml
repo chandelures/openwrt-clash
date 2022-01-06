@@ -114,7 +114,7 @@ jobs:
           CLASH_PATH=$(find "$SDK_HOME/bin" -type f -name "${PACKAGE_NAME}_*.ipk")
           cp -f $CLASH_PATH "${{ github.workspace }}"
           DASHBOARD_PATH=$(find "$SDK_HOME/bin" -type f -name "clash-dashboard_*.ipk")
-          [ "$ARCH" == "x86_64" ] && cp -f $DASHBOARD_PATH "${{ github.workspace }}"
+          if [ "$ARCH" == "x86_64" ]; then cp -f $DASHBOARD_PATH "${{ github.workspace }}"; fi
 
       - name: Release and Upload Assets
         uses: softprops/action-gh-release@v1
