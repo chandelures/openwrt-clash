@@ -70,7 +70,7 @@ jobs:
           - arch: x86_64
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/64
             sdk_name: -sdk-x86-64_
-    
+
     env:
       PACKAGE_NAME: clash
       SDK_URL_PATH: ${{ matrix.sdk_url_path }}
@@ -79,34 +79,15 @@ jobs:
       CACHE_DIR: ~/cache
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      
-      - name: Set Release env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-
-      - name: Setup Cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.CACHE_DIR }}
-          key: ${{ runner.os }}-${{ env.ARCH }}-${{ env.RELEASE_VERSION }}
-      
+      - uses: actions/checkout@v2
       - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -yq gettext libncurses5-dev rsync xsltproc
-      
-      - name: Create Cache Directories
+      - name: Create Directories
         run: |
-          CACHE_DIR_DL="$(eval echo "$CACHE_DIR/dl")"
-          CACHE_DIR_FEEDS="$(eval echo "$CACHE_DIR/feeds")"
-          mkdir -p "$CACHE_DIR_DL"
-          mkdir -p "$CACHE_DIR_FEEDS"
-          echo "CACHE_DIR_DL=$CACHE_DIR_DL" >> $GITHUB_ENV
-          echo "CACHE_DIR_FEEDS=$CACHE_DIR_FEEDS" >> $GITHUB_ENV
           echo "SDK_HOME=$(mktemp -d)" >> $GITHUB_ENV
           echo "SDK_DL_DIR=$(mktemp -d)" >> $GITHUB_ENV
-
       - name: Prepare Build Environment
         run: |
           cd "$SDK_DL_DIR"
@@ -115,33 +96,27 @@ jobs:
             exit 1
           fi
           SDK_FILE="$(cat sha256sums.small | cut -d' ' -f2 | sed 's/*//g')"
-
           wget -q -O "$SDK_FILE" "$SDK_URL_PATH/$SDK_FILE"
           if ! sha256sum -c ./sha256sums.small >/dev/null 2>&1 ; then
             echo "SDK can not be verified!"
             exit 1
           fi
           tar -Jxf "$SDK_DL_DIR/$SDK_FILE" -C "$SDK_HOME" --strip=1
-
-          rm -rf "$SDK_HOME/dl"
-          rm -rf "$SDK_HOME/feeds"
-          ln -s "$CACHE_DIR_DL" "$SDK_HOME/dl"
-          ln -s "$CACHE_DIR_FEEDS" "$SDK_HOME/feeds"
-        
       - name: Build Packages
         run: |
           cd "$SDK_HOME"
           ./scripts/feeds update -a > /dev/null 2>&1
-          ./scripts/feeds install -a > /dev/null 2>&1
+          ./scripts/feeds install golang > /dev/null 2>&1
           ln -s "${{ github.workspace }}" "package/$PACKAGE_NAME"
           make defconfig > /dev/null 2>&1
-          make package/${PACKAGE_NAME}/{clean,download,compile} V=s > /dev/null
+          make package/${PACKAGE_NAME}/{clean,download,compile}
           find "$SDK_HOME/bin" -type f -name "${PACKAGE_NAME}_*.ipk" \
            -exec cp -f {} "${{ github.workspace }}" \;
-      
+          find "$SDK_HOME/bin" -type f -name "clash-dashboard_*.ipk" \
+           -exec cp -f {} "${{ github.workspace }}" \;
       - name: Release and Upload Assets
         uses: softprops/action-gh-release@v1
         with:
-          files: '*.ipk'
+          files: "*.ipk"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
