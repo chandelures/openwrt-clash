@@ -70,7 +70,7 @@ jobs:
           - arch: x86_64
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/64
             sdk_name: -sdk-x86-64_
-    
+
     env:
       PACKAGE_NAME: clash
       SDK_URL_PATH: ${{ matrix.sdk_url_path }}
@@ -79,7 +79,7 @@ jobs:
       CACHE_DIR: ~/cache
 
     steps:
-      -  uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - name: Install Dependencies
         run: |
           sudo apt-get update
@@ -109,7 +109,7 @@ jobs:
           ./scripts/feeds install golang > /dev/null 2>&1
           ln -s "${{ github.workspace }}" "package/$PACKAGE_NAME"
           make defconfig > /dev/null 2>&1
-          make package/${PACKAGE_NAME}/{clean,download,compile} V=s > /dev/null
+          make package/${PACKAGE_NAME}/{clean,download,compile}
           find "$SDK_HOME/bin" -type f -name "${PACKAGE_NAME}_*.ipk" \
            -exec cp -f {} "${{ github.workspace }}" \;
           find "$SDK_HOME/bin" -type f -name "clash-dashboard_*.ipk" \
@@ -117,6 +117,6 @@ jobs:
       - name: Release and Upload Assets
         uses: softprops/action-gh-release@v1
         with:
-          files: '*.ipk'
+          files: "*.ipk"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
