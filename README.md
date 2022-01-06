@@ -22,7 +22,23 @@ This repository is the clash package based on
 - (Optional) Clash geoip support
 - (Optional) Clash dashboard support
 
-## Build
+## Installation
+
+### Manual Install
+
+1. Update list of available packages
+
+```shell
+$ opkg update
+```
+
+2. Choose correct .ipk based on the architecture of router from release page, and use Opkg package manager to install.
+
+```shell
+$ opkg install clash_*.ipk
+```
+
+### Build From Source
 
 1. First, You should download the Openwrt Source Code or SDK as the basic enviroment
    to build the package.
