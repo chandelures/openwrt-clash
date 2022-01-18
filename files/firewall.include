@@ -1,6 +1,7 @@
 #!/bin/sh
 
 . "/lib/functions.sh"
+. "/lib/functions/network.sh"
 
 CONF="clash"
 IPTABLES="/usr/sbin/iptables"
@@ -43,6 +44,11 @@ bypass_addresses() {
 
 iptables_bypass() {
 	local chain=$1
+
+	local net_if net_addr
+	network_find_wan net_if
+	network_get_ipaddr net_addr $net_if
+	$IPTABLES -t mangle -A "$chain" -d "$net_addr" -j RETURN
 
 	for addr in $(bypass_addresses); do
 		if [ "$dns_mode" == "fake-ip" ]; then
