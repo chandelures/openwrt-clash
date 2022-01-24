@@ -143,12 +143,14 @@ reload_service() {
 }
 
 service_triggers() {
-	local iface delay
-	delay=10
-	PROCD_RELOAD_DELAY=$((delay * 1000))
+	config_load $CONF
+
+	local iface trigger_delay
+	config_get trigger_delay "global" "trigger_delay"
+	PROCD_RELOAD_DELAY=$((trigger_delay * 1000))
 	network_find_wan iface
 	if [ -n "$iface" ]; then
-		procd_add_interface_trigger "interface.*" $iface "/etc/init.d/firewall" "restart"
+		procd_add_interface_trigger "interface.*" $iface "/etc/init.d/clash" "restart"
 	fi
 	procd_add_reload_trigger "$CONF"
 }
