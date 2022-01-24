@@ -74,6 +74,7 @@ local function update_general(profile)
     local log_level = get("global", "log_level")
     local api_host = get("global", "api_host")
     local api_port = get_number("global", "api_port")
+    local ipv6 = get_bool("global", "ipv6")
 
     profile["http-port"] = http_port
     profile["socks-port"] = socks_port
@@ -95,6 +96,7 @@ local function update_general(profile)
     profile["mode"] = mode
     profile["log-level"] = log_level
     profile["external-controller"] = api_host .. ":" .. api_port
+    prpfile["ipv6"] = ipv6
 end
 
 local function update_dns(profile)
@@ -105,10 +107,11 @@ local function update_dns(profile)
     local default_nameserver = get("global", "default_nameserver")
     local nameserver = get("global", "nameserver")
     local fallback = get("global", "fallback")
+    local ipv6 = get_bool("global", "ipv6")
 
     local profile_dns = {}
     profile_dns["enable"] = true
-    profile_dns["ipv6"] = false
+    profile_dns["ipv6"] = ipv6
     profile_dns["enhanced-mode"] = dns_mode
     profile_dns["fake-ip-range"] = fake_ip_range
     profile_dns["listen"] = dns_host .. ":" .. dns_port
@@ -126,7 +129,6 @@ end
 local function drop_useless(profile)
     profile["redir-port"] = nil
     profile["external-ui"] = nil
-    profile["ipv6"] = false
 end
 
 local function dump(profile)
