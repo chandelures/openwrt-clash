@@ -96,7 +96,7 @@ local function update_general(profile)
     profile["mode"] = mode
     profile["log-level"] = log_level
     profile["external-controller"] = api_host .. ":" .. api_port
-    prpfile["ipv6"] = ipv6
+    profile["ipv6"] = ipv6
 end
 
 local function update_dns(profile)
