@@ -11,6 +11,9 @@ BUILD_CONF_SCRIPT="/usr/lib/clash/build_conf.lua"
 CAP_FILE="/etc/capabilities/clash.json"
 DNSMASQ_RULE_FILE="/tmp/dnsmasq.d/clash.conf"
 
+CREATE_FIREWALL_RULE_SCRIPT="/usr/share/clash/create_firewall_rules.sh"
+CLEAR_FIREWALL_RULE_SCRIPT="/usr/share/clash/clear_firewall_rules.sh"
+
 msg() {
 	logger -p daemon.info -st "$CONF[$$]" "$*"
 }
@@ -55,18 +58,14 @@ start_clash() {
 	procd_close_instance
 }
 
-enable_firewall_include() {
-	msg "Appling firewall rules and restarting firewall service"
-	uci_set "firewall" "clash" "enabled" "1"
-	uci_commit "firewall"
-	restart_other_service "firewall"
+enable_firewall_rules() {
+	msg "Appling firewall rules"
+	$CREATE_FIREWALL_RULE_SCRIPT
 }
 
-disable_firewall_include() {
-	msg "Removing firewall rules and restarting firewall service"
-	uci_set "firewall" "clash" "enabled" "0"
-	uci_commit "firewall"
-	restart_other_service "firewall"
+disable_firewall_rules() {
+	msg "Removing firewall rules"
+	$CLEAR_FIREWALL_RULE_SCRIPT
 }
 
 create_routing_rule() {
@@ -123,7 +122,7 @@ start_service() {
 	if [ "$tproxy_enabled" -eq 1 ]; then
 		msg "Transparent proxy is enabled"
 		create_routing_rule "$tproxy_mark"
-		enable_firewall_include
+		enable_firewall_rules
 		create_dnsmasq_rule "$dns_host" "$dns_port"
 	fi
 }
@@ -133,7 +132,7 @@ stop_service() {
 	config_get tproxy_mark "global" "tproxy_mark" "1"
 
 	clear_routing_rule "$tproxy_mark"
-	disable_firewall_include
+	disable_firewall_rules
 	clear_dnsmasq_rule
 }
 
