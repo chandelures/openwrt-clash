@@ -35,7 +35,6 @@ define Package/$(PKG_NAME)
 	URL:=https://github.com/dreamacro/clash
 	DEPENDS:=$(GO_ARCH_DEPENDS) \
 		+iptables \
-		+iptables-mod-tproxy \
 		+libuci-lua \
 		+lyaml \
 		+ca-bundle
