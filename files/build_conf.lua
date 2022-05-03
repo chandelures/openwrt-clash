@@ -21,16 +21,26 @@ local function path_exist(path)
 end
 
 local function get(section, option, default)
-    return x:get(config, section, option, default)
+    value = x:get(config, section, option)
+    if value == nil then
+        return default
+    end
+    return value
 end
 
 local function get_bool(section, option, default)
-    value = x:get(config, section, option, default)
+    value = x:get(config, section, option)
+    if value == nil then
+        return default
+    end
     return value == "1" or value == "true"
 end
 
 local function get_number(section, option, default)
-    value = x:get(config, section, option, default)
+    value = x:get(config, section, option)
+    if value == nil then
+        return default
+    end
     if tonumber(value) == 0 then
         return nil
     end
@@ -63,19 +73,19 @@ local function load()
 end
 
 local function update_general(profile)
-    local http_port = get_number("global", "http_port")
-    local socks_port = get_number("global", "socks_port")
-    local mixed_port = get_number("global", "mixed_port")
-    local tproxy_enabled = get_bool("global", "tproxy_enabled")
-    local tproxy_port = get_number("global", "tproxy_port")
-    local allow_lan = get_bool("global", "allow_lan")
-    local bind_addr = get("global", "bind_addr")
-    local mode = get("global", "mode")
-    local log_level = get("global", "log_level")
-    local api_host = get("global", "api_host")
-    local api_port = get_number("global", "api_port")
-    local ipv6 = get_bool("global", "ipv6")
-    local routing_mark = get_number("global", "routing_mark", "255")
+    local http_port = get_number("global", "http_port", nil)
+    local socks_port = get_number("global", "socks_port", nil)
+    local mixed_port = get_number("global", "mixed_port", nil)
+    local tproxy_enabled = get_bool("global", "tproxy_enabled", true)
+    local tproxy_port = get_number("global", "tproxy_port", 7890)
+    local allow_lan = get_bool("global", "allow_lan", true)
+    local bind_addr = get("global", "bind_addr", "127.0.0.1")
+    local mode = get("global", "mode", "rule")
+    local log_level = get("global", "log_level", "warning")
+    local api_host = get("global", "api_host", "0.0.0.0")
+    local api_port = get_number("global", "api_port", 9090)
+    local ipv6 = get_bool("global", "ipv6", false)
+    local routing_mark = get_number("global", "routing_mark", 255)
 
     profile["http-port"] = http_port
     profile["socks-port"] = socks_port
@@ -102,14 +112,14 @@ local function update_general(profile)
 end
 
 local function update_dns(profile)
-    local dns_host = get("global", "dns_host")
-    local dns_port = get_number("global", "dns_port")
-    local dns_mode = get("global", "dns_mode")
-    local fake_ip_range = get("global", "fake_ip_range")
-    local default_nameserver = get("global", "default_nameserver")
-    local nameserver = get("global", "nameserver")
-    local fallback = get("global", "fallback")
-    local ipv6 = get_bool("global", "ipv6")
+    local dns_host = get("global", "dns_host", "127.0.0.1")
+    local dns_port = get_number("global", "dns_port", "5353")
+    local dns_mode = get("global", "dns_mode", "fake-ip")
+    local fake_ip_range = get("global", "fake_ip_range", "198.18.0.1/16")
+    local default_nameserver = get("global", "default_nameserver", nil)
+    local nameserver = get("global", "nameserver", nil)
+    local fallback = get("global", "fallback", nil)
+    local ipv6 = get_bool("global", "ipv6", false)
 
     local profile_dns = {}
     profile_dns["enable"] = true
