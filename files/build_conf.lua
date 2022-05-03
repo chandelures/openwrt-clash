@@ -20,17 +20,17 @@ local function path_exist(path)
     return false
 end
 
-local function get(section, option)
-    return x:get(config, section, option)
+local function get(section, option, default)
+    return x:get(config, section, option, default)
 end
 
-local function get_bool(section, option)
-    value = x:get(config, section, option)
+local function get_bool(section, option, default)
+    value = x:get(config, section, option, default)
     return value == "1" or value == "true"
 end
 
-local function get_number(section, option)
-    value = x:get(config, section, option)
+local function get_number(section, option, default)
+    value = x:get(config, section, option, default)
     if tonumber(value) == 0 then
         return nil
     end
@@ -75,7 +75,7 @@ local function update_general(profile)
     local api_host = get("global", "api_host")
     local api_port = get_number("global", "api_port")
     local ipv6 = get_bool("global", "ipv6")
-    local routing_mark = get_number("global", "routing_mark")
+    local routing_mark = get_number("global", "routing_mark", "255")
 
     profile["http-port"] = http_port
     profile["socks-port"] = socks_port
