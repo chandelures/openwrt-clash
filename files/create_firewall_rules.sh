@@ -10,6 +10,7 @@ config_load "$CONF"
 
 config_get tproxy_port "global" "tproxy_port"
 config_get tproxy_mark "global" "tproxy_mark" "1"
+config_get routing_mark "global" "routing_mark" "255"
 config_get_bool udp_tproxy_enabled "global" "udp_tproxy_enabled"
 config_get dns_mode "global" "dns_mode"
 config_get fake_ip_range "global" "fake_ip_range"
@@ -61,6 +62,7 @@ iptables_bypass() {
 
 tproxy_rules() {
 	iptables_bypass "CLASH"
+	$IPTABLES -t mangle -I CLASH -j RETURN -m mark --mark $routing_mark
 	if [ "$udp_tproxy_enabled" -eq "1" ]; then
 		$IPTABLES -t mangle -A CLASH -p udp -j TPROXY \
 			--on-ip 127.0.0.1 --on-port "$tproxy_port" \
@@ -76,7 +78,7 @@ tproxy_rules() {
 
 local_rules() {
 	iptables_bypass "CLASH_LOCAL"
-	$IPTABLES -t mangle -I CLASH_LOCAL -m owner --uid-owner "clash" -j RETURN
+	$IPTABLES -t mangle -I CLASH_LOCAL -j RETURN -m mark --mark $routing_mark
 	if [ "$udp_tproxy_enabled" -eq "1" ]; then
 		$IPTABLES -t mangle -A CLASH_LOCAL -p udp -j MARK \
 			--set-mark "$tproxy_mark"
@@ -91,7 +93,7 @@ local_rules() {
 main() {
 	create_chains
 	tproxy_rules
-	[ -x "/sbin/ujail" ] && (opkg list-installed | grep "iptables-mod-extra" >/dev/null) && local_rules
+	local_rules
 }
 
 main

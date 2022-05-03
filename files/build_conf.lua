@@ -75,6 +75,7 @@ local function update_general(profile)
     local api_host = get("global", "api_host")
     local api_port = get_number("global", "api_port")
     local ipv6 = get_bool("global", "ipv6")
+    local routing_mark = get_number("global", "routing_mark")
 
     profile["http-port"] = http_port
     profile["socks-port"] = socks_port
@@ -97,6 +98,7 @@ local function update_general(profile)
     profile["log-level"] = log_level
     profile["external-controller"] = api_host .. ":" .. api_port
     profile["ipv6"] = ipv6
+    profile["routing-mark"] = routing_mark
 end
 
 local function update_dns(profile)
