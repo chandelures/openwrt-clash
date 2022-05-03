@@ -38,7 +38,6 @@ define Package/$(PKG_NAME)
 		+libuci-lua \
 		+lyaml \
 		+ca-bundle
-	USERID:=clash=7890:clash=7890
 endef
 
 define Package/clash-dashboard
@@ -128,9 +127,6 @@ endif
 
 	$(INSTALL_DIR) $(1)/usr/lib/clash/
 	$(INSTALL_BIN) $(CURDIR)/files/build_conf.lua $(1)/usr/lib/clash/build_conf.lua
-
-	$(INSTALL_DIR) $(1)/etc/capabilities/
-	$(INSTALL_BIN) $(CURDIR)/files/clash.capabilities $(1)/etc/capabilities/clash.json
 endef
 
 define Package/clash-dashboard/install

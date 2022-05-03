@@ -8,7 +8,6 @@ START=99
 CONF="clash"
 CONF_DIR="/etc/clash"
 BUILD_CONF_SCRIPT="/usr/lib/clash/build_conf.lua"
-CAP_FILE="/etc/capabilities/clash.json"
 DNSMASQ_RULE_FILE="/tmp/dnsmasq.d/clash.conf"
 
 CREATE_FIREWALL_RULE_SCRIPT="/usr/share/clash/create_firewall_rules.sh"
@@ -27,7 +26,6 @@ start_clash() {
 	config_load "$CONF"
 
 	local conffile="$CONF_DIR/config.yaml"
-	local user="clash"
 	local prog
 	local api_port
 	local api_host
@@ -47,13 +45,6 @@ start_clash() {
 	procd_set_param stdout 1
 	procd_set_param stderr 1
 	procd_set_param respawn
-
-	[ -x "/sbin/ujail" -a -e "$CAP_FILE" ] && {
-		procd_add_jail "$CONF"
-		procd_set_param capabilities "$CAP_FILE"
-		procd_set_param user "$user"
-		procd_set_param no_new_privs 1
-	}
 
 	procd_close_instance
 }
