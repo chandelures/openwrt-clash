@@ -10,7 +10,7 @@ msg() {
 	logger -p daemon.info -st "$CONF[$$]" "$*"
 }
 
-(opkg list-installed | grep "curl" >/dev/null) && { msg "Update profile from url require cURL with SSL support."; return 1;}
+(opkg list-installed | grep "curl" >/dev/null) || { msg "Update profile from url require cURL with SSL support."; return 1;}
 [ -z "$profile" ] && { msg "Missing profile name."; return 1;}
 
 . "/lib/functions.sh"
