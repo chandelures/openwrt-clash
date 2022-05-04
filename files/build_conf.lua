@@ -9,6 +9,7 @@ local config = "clash"
 local yamlext = ".yaml"
 local confdir = "/etc/clash"
 local profile_dir = "/etc/clash/profiles"
+local update_profile_script = "/usr/lib/clash/udpate_profile.sh"
 local current_profile = x:get(config, "global", "current_profile")
 
 local function path_exist(path)
@@ -60,9 +61,19 @@ local function fetch()
         return
     end
 
-    file = io.open(profile_path(), "w")
-    file:write("mode: direct")
-    file:close()
+    local type = get(current_profile, "type", "Static")
+
+    if type == "Static" then
+        file = io.open(profile_path(), "w")
+        file:write("")
+        file:close()
+        return
+    end
+    
+    if type == "URL" then
+        os.execute(update_profile_script .. " " .. current_profile)
+        return
+    end
 end
 
 local function load()
