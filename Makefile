@@ -126,6 +126,7 @@ endif
 	$(INSTALL_BIN) $(CURDIR)/files/create_firewall_rules.sh $(1)/usr/lib/clash/create_firewall_rules.sh
 	$(INSTALL_BIN) $(CURDIR)/files/clear_firewall_rules.sh $(1)/usr/lib/clash/clear_firewall_rules.sh
 	$(INSTALL_BIN) $(CURDIR)/files/build_conf.lua $(1)/usr/lib/clash/build_conf.lua
+	$(INSTALL_BIN) $(CURDIR)/files/update_profile.sh $(1)/usr/lib/clash/update_profile.sh
 endef
 
 define Package/clash-dashboard/install
