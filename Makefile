@@ -122,11 +122,9 @@ ifdef CONFIG_PACKAGE_CLASH_INCLUDE_COUNTRY_MMDB
 	$(INSTALL_DATA) $(DL_DIR)/$(COUNTRY_MMDB_FILE) $(1)/etc/clash/Country.mmdb
 endif
 
-	$(INSTALL_DIR) $(1)/usr/share/clash/
-	$(INSTALL_BIN) $(CURDIR)/files/create_firewall_rules.sh $(1)/usr/share/clash/create_firewall_rules.sh
-	$(INSTALL_BIN) $(CURDIR)/files/clear_firewall_rules.sh $(1)/usr/share/clash/clear_firewall_rules.sh
-
 	$(INSTALL_DIR) $(1)/usr/lib/clash/
+	$(INSTALL_BIN) $(CURDIR)/files/create_firewall_rules.sh $(1)/usr/lib/clash/create_firewall_rules.sh
+	$(INSTALL_BIN) $(CURDIR)/files/clear_firewall_rules.sh $(1)/usr/lib/clash/clear_firewall_rules.sh
 	$(INSTALL_BIN) $(CURDIR)/files/build_conf.lua $(1)/usr/lib/clash/build_conf.lua
 endef
 

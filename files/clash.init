@@ -10,8 +10,8 @@ CONF_DIR="/etc/clash"
 BUILD_CONF_SCRIPT="/usr/lib/clash/build_conf.lua"
 DNSMASQ_RULE_FILE="/tmp/dnsmasq.d/clash.conf"
 
-CREATE_FIREWALL_RULE_SCRIPT="/usr/share/clash/create_firewall_rules.sh"
-CLEAR_FIREWALL_RULE_SCRIPT="/usr/share/clash/clear_firewall_rules.sh"
+CREATE_FIREWALL_RULE_SCRIPT="/usr/lib/clash/create_firewall_rules.sh"
+CLEAR_FIREWALL_RULE_SCRIPT="/usr/lib/clash/clear_firewall_rules.sh"
 
 msg() {
 	logger -p daemon.info -st "$CONF[$$]" "$*"
