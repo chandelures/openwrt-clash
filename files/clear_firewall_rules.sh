@@ -1,3 +1,4 @@
+#!/bin/sh
 IPTABLES=iptables
 
 $IPTABLES -t mangle -D PREROUTING -j CLASH 2>/dev/null
