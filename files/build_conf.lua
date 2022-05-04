@@ -9,7 +9,7 @@ local config = "clash"
 local yamlext = ".yaml"
 local confdir = "/etc/clash"
 local profile_dir = "/etc/clash/profiles"
-local update_profile_script = "/usr/lib/clash/udpate_profile.sh"
+local update_profile_script = "/usr/lib/clash/update_profile.sh"
 local current_profile = x:get(config, "global", "current_profile")
 
 local function path_exist(path)
