@@ -10,8 +10,10 @@ CONF_DIR="/etc/clash"
 BUILD_CONF_SCRIPT="/usr/lib/clash/build_conf.lua"
 DNSMASQ_RULE_FILE="/tmp/dnsmasq.d/clash.conf"
 
-CREATE_FIREWALL_RULE_SCRIPT="/usr/lib/clash/create_firewall_rules.sh"
-CLEAR_FIREWALL_RULE_SCRIPT="/usr/lib/clash/clear_firewall_rules.sh"
+CREATE_RULE_SCRIPT="/usr/lib/clash/create_rules.sh"
+CLEAR_RULE_SCRIPT="/usr/lib/clash/clear_rules.sh"
+
+config_load "$CONF"
 
 msg() {
 	logger -p daemon.info -st "$CONF[$$]" "$*"
@@ -23,16 +25,14 @@ restart_other_service() {
 }
 
 start_clash() {
-	config_load "$CONF"
-
 	local conffile="$CONF_DIR/config.yaml"
 	local prog
 	local api_port
 	local api_host
 
 	config_get prog "global" "prog" "/usr/bin/clash"
-	config_get api_host "global" "api_host"
-	config_get api_port "global" "api_port"
+	config_get api_host "global" "api_host" "0.0.0.0"
+	config_get api_port "global" "api_port" "9090"
 
 	$BUILD_CONF_SCRIPT
 
@@ -49,31 +49,17 @@ start_clash() {
 	procd_close_instance
 }
 
-enable_firewall_rules() {
-	msg "Appling firewall rules"
-	$CREATE_FIREWALL_RULE_SCRIPT
+enable_rules() {
+	msg "Appling route and firewall rules"
+	$CREATE_RULE_SCRIPT
 }
 
-disable_firewall_rules() {
-	msg "Removing firewall rules"
-	$CLEAR_FIREWALL_RULE_SCRIPT
+disable_rules() {
+	msg "Removing route and firewall rules"
+	$CLEAR_RULE_SCRIPT
 }
 
-create_routing_rule() {
-	msg "Appling route rules"
-	local tproxy_mark="$1"
-	ip rule add fwmark "$tproxy_mark" table 100 2>/dev/null
-	ip route add local 0.0.0.0/0 dev lo table 100 2>/dev/null
-}
-
-clear_routing_rule() {
-	msg "Removing route rules"
-	local tproxy_mark="$1"
-	ip rule del fwmark "$tproxy_mark" table 100 2>/dev/null
-	ip route del local 0.0.0.0/0 dev lo table 100 2>/dev/null
-}
-
-create_dnsmasq_rule() {
+create_dnsmasq_rules() {
 	msg "Appling dnsmasq rules and restarting dnsmasq service"
 	local dns_host="$1"
 	local dns_port="$2"
@@ -82,26 +68,23 @@ create_dnsmasq_rule() {
 	restart_other_service "dnsmasq"
 }
 
-clear_dnsmasq_rule() {
+clear_dnsmasq_rules() {
 	msg "Removing dnsmasq rules and restarting dnsmasq service"
 	rm -f $DNSMASQ_RULE_FILE
 	restart_other_service "dnsmasq"
 }
 
 start_service() {
-	config_load "$CONF"
-
 	local enabled
 	local dns_host dns_port
 	local tproxy_enabled tporxy_mark
 
 	config_get_bool enabled "global" "enabled" "0"
-	config_get_bool tproxy_enabled "global" "tproxy_enabled"
-	config_get tproxy_mark "global" "tproxy_mark" "1"
-	config_get dns_host "global" "dns_host"
-	config_get dns_port "global" "dns_port"
+	config_get_bool tproxy_enabled "global" "tproxy_enabled" 1
+	config_get dns_host "global" "dns_host" "127.0.0.1"
+	config_get dns_port "global" "dns_port" "5353"
 
-	clear_routing_rule "$tproxy_mark"
+	disable_rules
 
 	[ "$enabled" -eq "1" ] || {
 		msg "Instance is disabled"
@@ -112,19 +95,14 @@ start_service() {
 
 	if [ "$tproxy_enabled" -eq 1 ]; then
 		msg "Transparent proxy is enabled"
-		create_routing_rule "$tproxy_mark"
-		enable_firewall_rules
-		create_dnsmasq_rule "$dns_host" "$dns_port"
+		enable_rules
+		create_dnsmasq_rules "$dns_host" "$dns_port"
 	fi
 }
 
 stop_service() {
-	config_load "$CONF"
-	config_get tproxy_mark "global" "tproxy_mark" "1"
-
-	clear_routing_rule "$tproxy_mark"
-	disable_firewall_rules
-	clear_dnsmasq_rule
+	disable_rules
+	clear_dnsmasq_rules
 }
 
 reload_service() {
@@ -133,10 +111,8 @@ reload_service() {
 }
 
 service_triggers() {
-	config_load $CONF
-
 	local iface trigger_delay
-	config_get trigger_delay "global" "trigger_delay"
+	config_get trigger_delay "global" "trigger_delay" "10"
 	PROCD_RELOAD_DELAY=$((trigger_delay * 1000))
 	network_find_wan iface
 	if [ -n "$iface" ]; then
