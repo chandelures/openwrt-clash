@@ -79,17 +79,17 @@ start_service() {
 	local dns_host dns_port
 	local tproxy_enabled tporxy_mark
 
-	config_get_bool enabled "global" "enabled" "0"
+	config_get_bool enabled "global" "enabled" 0
 	config_get_bool tproxy_enabled "global" "tproxy_enabled" 1
 	config_get dns_host "global" "dns_host" "127.0.0.1"
 	config_get dns_port "global" "dns_port" "5353"
 
 	disable_rules
 
-	[ "$enabled" -eq "1" ] || {
+	if [ "$enabled" -eq 0 ]; then
 		msg "Instance is disabled"
 		return 0
-	}
+	fi
 
 	start_clash
 
