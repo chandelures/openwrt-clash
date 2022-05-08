@@ -74,14 +74,13 @@ define Package/$(PKG_NAME)/conffiles
 /etc/config/clash
 endef
 
-COUNTRY_MMDB_VER=20220312
-COUNTRY_MMDB_FILE:=Country.$(COUNTRY_MMDB_VER).mmdb
+COUNTRY_MMDB_VER=20220412
 
 define Download/country_mmdb
 	URL:=https://github.com/Dreamacro/maxmind-geoip/releases/download/$(COUNTRY_MMDB_VER)/
 	URL_FILE:=Country.mmdb
-	FILE:=$(COUNTRY_MMDB_FILE)
-	HASH:=5cac630df34fb6554fbc233e2e3633e1d5afe70bd66a195ead0739838fd337a5
+	FILE:=Country.mmdb
+	HASH:=a9f995ac42d64f81bda1d16bbd90c69a860e37f1f787e500597c85d36957104a
 endef
 
 YACD_DASHBOARD_VER=0.3.4
@@ -119,7 +118,7 @@ define Package/$(PKG_NAME)/install
 
 ifdef CONFIG_PACKAGE_CLASH_INCLUDE_COUNTRY_MMDB
 	$(INSTALL_DIR) $(1)/etc/clash/
-	$(INSTALL_DATA) $(DL_DIR)/$(COUNTRY_MMDB_FILE) $(1)/etc/clash/Country.mmdb
+	$(INSTALL_DATA) $(DL_DIR)/Country.mmdb $(1)/etc/clash/Country.mmdb
 endif
 
 	$(INSTALL_DIR) $(1)/usr/lib/clash/
