@@ -84,13 +84,11 @@ local function load()
 end
 
 local function update_general(profile)
-    local http_port = get_number("global", "http_port", nil)
-    local socks_port = get_number("global", "socks_port", nil)
     local mixed_port = get_number("global", "mixed_port", nil)
     local tproxy_enabled = get_bool("global", "tproxy_enabled", true)
     local tproxy_port = get_number("global", "tproxy_port", 7890)
     local allow_lan = get_bool("global", "allow_lan", true)
-    local bind_addr = get("global", "bind_addr", "127.0.0.1")
+    local bind_addr = get("global", "bind_addr", "0.0.0.0")
     local mode = get("global", "mode", "rule")
     local log_level = get("global", "log_level", "warning")
     local api_host = get("global", "api_host", "0.0.0.0")
@@ -98,8 +96,6 @@ local function update_general(profile)
     local ipv6 = get_bool("global", "ipv6", false)
     local routing_mark = get_number("global", "routing_mark", 255)
 
-    profile["http-port"] = http_port
-    profile["socks-port"] = socks_port
     profile["mixed-port"] = mixed_port
     if tproxy_enabled then
         profile["tproxy-port"] = tproxy_port
@@ -150,6 +146,8 @@ local function update_dns(profile)
 end
 
 local function drop_useless(profile)
+    profile["http-port"] = nil
+    profile["socks-port"] = nil
     profile["redir-port"] = nil
     profile["external-ui"] = nil
 end
