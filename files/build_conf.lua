@@ -119,6 +119,7 @@ local function update_general(profile)
 end
 
 local function update_dns(profile)
+    local tproxy_enabled = get("global", "tproxy_enabled", true)
     local dns_host = get("global", "dns_host", "127.0.0.1")
     local dns_port = get_number("global", "dns_port", "5353")
     local dns_mode = get("global", "dns_mode", "fake-ip")
@@ -129,7 +130,7 @@ local function update_dns(profile)
     local ipv6 = get_bool("global", "ipv6", false)
 
     local profile_dns = {}
-    profile_dns["enable"] = true
+    profile_dns["enable"] = tproxy_enabled
     profile_dns["ipv6"] = ipv6
     profile_dns["enhanced-mode"] = dns_mode
     profile_dns["fake-ip-range"] = fake_ip_range
