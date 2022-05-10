@@ -69,7 +69,7 @@ local function fetch()
         file:close()
         return
     end
-    
+
     if type == "URL" then
         os.execute(update_profile_script .. " " .. current_profile)
         return
@@ -119,7 +119,7 @@ local function update_general(profile)
 end
 
 local function update_dns(profile)
-    local tproxy_enabled = get("global", "tproxy_enabled", true)
+    local tproxy_enabled = get_bool("global", "tproxy_enabled", true)
     local dns_host = get("global", "dns_host", "127.0.0.1")
     local dns_port = get_number("global", "dns_port", "5353")
     local dns_mode = get("global", "dns_mode", "fake-ip")
