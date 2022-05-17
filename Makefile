@@ -41,12 +41,15 @@ define Package/$(PKG_NAME)
 		+ca-bundle
 endef
 
+YACD_DASHBOARD_VER=0.3.5
+
 define Package/clash-dashboard
 	$(call Package/$(PKG_NAME)/template)
 	TITLE:=Web Dashboard for Clash
 	URL:=https://github.com/dreamacro/clash-dashboard
 	DEPENDS:=$(PKG_NAME)
 	PKGARCH:=all
+	VERSION:=$(YACD_DASHBOARD_VER)
 endef
 
 define Package/$(PKG_NAME)/description
@@ -82,8 +85,6 @@ define Download/country_mmdb
 	FILE:=Country.mmdb
 	HASH:=a9f995ac42d64f81bda1d16bbd90c69a860e37f1f787e500597c85d36957104a
 endef
-
-YACD_DASHBOARD_VER=0.3.5
 
 define Download/clash-dashboard
 	URL:=https://github.com/haishanh/yacd/releases/download/v$(YACD_DASHBOARD_VER)/
