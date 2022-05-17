@@ -83,13 +83,13 @@ define Download/country_mmdb
 	HASH:=a9f995ac42d64f81bda1d16bbd90c69a860e37f1f787e500597c85d36957104a
 endef
 
-YACD_DASHBOARD_VER=0.3.4
+YACD_DASHBOARD_VER=0.3.5
 
 define Download/clash-dashboard
 	URL:=https://github.com/haishanh/yacd/releases/download/v$(YACD_DASHBOARD_VER)/
 	URL_FILE:=yacd.tar.xz
 	FILE:=yacd.tar.xz
-	HASH:=c24683776ff1d16ce66ef64fc86b47c1254046ded3432e8d2387d0b6c6e50193
+	HASH:=8f6b03382ed0aa83f4a6d43d70a6ba90733679f89dee480d9ac8203831106920
 endef
 
 define Build/Prepare
