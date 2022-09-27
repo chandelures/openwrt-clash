@@ -129,6 +129,7 @@ local function update_dns(profile)
 
     local profile_dns = {}
     profile_dns["enable"] = tproxy_enabled
+    profile_dns["enhanced-mode"] = "fake-ip"
     profile_dns["ipv6"] = ipv6
     profile_dns["fake-ip-range"] = fake_ip_range
     profile_dns["listen"] = dns_host .. ":" .. dns_port
