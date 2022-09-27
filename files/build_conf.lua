@@ -122,26 +122,18 @@ local function update_dns(profile)
     local tproxy_enabled = get_bool("global", "tproxy_enabled", true)
     local dns_host = get("global", "dns_host", "127.0.0.1")
     local dns_port = get_number("global", "dns_port", "5353")
-    local dns_mode = get("global", "dns_mode", "fake-ip")
     local fake_ip_range = get("global", "fake_ip_range", "198.18.0.1/16")
     local default_nameserver = get("global", "default_nameserver", nil)
     local nameserver = get("global", "nameserver", nil)
-    local fallback = get("global", "fallback", nil)
     local ipv6 = get_bool("global", "ipv6", false)
 
     local profile_dns = {}
     profile_dns["enable"] = tproxy_enabled
     profile_dns["ipv6"] = ipv6
-    profile_dns["enhanced-mode"] = dns_mode
     profile_dns["fake-ip-range"] = fake_ip_range
     profile_dns["listen"] = dns_host .. ":" .. dns_port
     profile_dns["default-nameserver"] = default_nameserver
     profile_dns["nameserver"] = nameserver
-    if dns_mode == "redir-host" then
-        profile_dns["fallback"] = fallback
-    else
-        profile_dns["fallback"] = nil
-    end
 
     profile["dns"] = profile_dns
 end
