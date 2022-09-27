@@ -147,7 +147,7 @@ local function update_dns(profile)
 end
 
 local function drop_useless(profile)
-    profile["http-port"] = nil
+    profile["port"] = nil
     profile["socks-port"] = nil
     profile["redir-port"] = nil
     profile["external-ui"] = nil
