@@ -11,7 +11,6 @@ config_load "$CONF"
 config_get tproxy_port "global" "tproxy_port" "7893"
 config_get tproxy_mark "global" "tproxy_mark" "1"
 config_get routing_mark "global" "routing_mark" "255"
-config_get dns_mode "global" "dns_mode" "fake-ip"
 config_get fake_ip_range "global" "fake_ip_range" "198.18.0.1/16"
 
 create_route_rules() {
@@ -58,11 +57,7 @@ apply_bypass_rules() {
 	$IPTABLES -t mangle -A "$chain" -d "$net_addr" -j RETURN
 
 	for addr in $(bypass_prefixes); do
-		if [ "$dns_mode" == "fake-ip" ]; then
-			[ "$addr" != "$fake_ip_range" ] && $IPTABLES -t mangle -A "$chain" -d "$addr" -j RETURN
-		else
-			$IPTABLES -t mangle -A "$chain" -d "$addr" -j RETURN
-		fi
+		[ "$addr" != "$fake_ip_range" ] && $IPTABLES -t mangle -A "$chain" -d "$addr" -j RETURN
 	done
 }
 
