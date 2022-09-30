@@ -50,17 +50,14 @@ start_clash() {
 }
 
 enable_rules() {
-	msg "Appling route and firewall rules"
 	$CREATE_RULE_SCRIPT
 }
 
 disable_rules() {
-	msg "Removing route and firewall rules"
 	$CLEAR_RULE_SCRIPT
 }
 
 create_dnsmasq_rules() {
-	msg "Appling dnsmasq rules and restarting dnsmasq service"
 	local dns_host="$1"
 	local dns_port="$2"
 	echo "strict-order" >$DNSMASQ_RULE_FILE
@@ -69,7 +66,6 @@ create_dnsmasq_rules() {
 }
 
 clear_dnsmasq_rules() {
-	msg "Removing dnsmasq rules and restarting dnsmasq service"
 	rm -f $DNSMASQ_RULE_FILE
 	restart_other_service "dnsmasq"
 }
@@ -94,15 +90,19 @@ start_service() {
 	start_clash
 
 	if [ "$tproxy_enabled" -eq 1 ]; then
-		msg "Transparent proxy is enabled"
+		msg "transparent proxy is enabled, applying firewall and dnsmasq rules"
 		enable_rules
 		create_dnsmasq_rules "$dns_host" "$dns_port"
 	fi
+
+	msg "clash instance is started"
 }
 
 stop_service() {
+	msg "remove firewall and dnsmasq rules"
 	disable_rules
 	clear_dnsmasq_rules
+	msg "clash instance is stopped"
 }
 
 reload_service() {
