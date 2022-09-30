@@ -102,7 +102,7 @@ stop_service() {
 	msg "remove firewall and dnsmasq rules"
 	disable_rules
 	clear_dnsmasq_rules
-	msg "clash instance is stopped"
+	msg "clash instance closed"
 }
 
 reload_service() {
