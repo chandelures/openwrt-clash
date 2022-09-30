@@ -77,14 +77,14 @@ define Package/$(PKG_NAME)/conffiles
 /etc/config/clash
 endef
 
-COUNTRY_MMDB_VER=20220812
+COUNTRY_MMDB_VER=20220912
 COUNTRY_MMDB_FILE:=Country.$(COUNTRY_MMDB_VER).mmdb
 
 define Download/country_mmdb
 	URL:=https://github.com/Dreamacro/maxmind-geoip/releases/download/$(COUNTRY_MMDB_VER)/
 	URL_FILE:=Country.mmdb
 	FILE:=$(COUNTRY_MMDB_FILE)
-	HASH:=532a0c07ea092cfd25e4678ba4cb31e728e34634cc334582d65a245c6d85ab75
+	HASH:=608423b966e2ce178413d9202fe8414b518019fd8f6e9696e66bbf9629bd43d0
 endef
 
 define Download/clash-dashboard
