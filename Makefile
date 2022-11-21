@@ -41,7 +41,7 @@ define Package/$(PKG_NAME)
 		+ca-bundle
 endef
 
-YACD_DASHBOARD_VER=0.3.6
+YACD_DASHBOARD_VER=0.3.8
 
 define Package/clash-dashboard
 	$(call Package/$(PKG_NAME)/template)
@@ -91,7 +91,7 @@ define Download/clash-dashboard
 	URL:=https://github.com/haishanh/yacd/releases/download/v$(YACD_DASHBOARD_VER)/
 	URL_FILE:=yacd.tar.xz
 	FILE:=yacd.tar.xz
-	HASH:=608c7e21c1ee6cfee6268c5a3951a4c21dc407eea67049058cec299c0b11e2fb
+	HASH:=d5d7ecde91a708a79386116753e32a59f32c8cb8eec80ded56c3ab94e511ba50
 endef
 
 define Build/Prepare
