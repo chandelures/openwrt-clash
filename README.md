@@ -13,8 +13,6 @@ This repository is the clash package based on
 
 **LuCI support** is on the https://github.com/chandelures/luci-app-simple-clash.
 
-- If you want to run clash as a non-root user, please install `procd-ujail`.
-
 ## Features
 
 - Most of the features of open-source clash core are supported
