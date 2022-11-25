@@ -54,7 +54,7 @@ jobs:
             sdk_name: -sdk-kirkwood_
           - arch: mips64_octeonplus
             sdk_url_path: http://downloads.openwrt.org/snapshots/targets/octeon/generic
-            sdk_name: -sdk-octeon_
+            sdk_name: -sdk-octeon-generic_
           - arch: mipsel_mips32
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm47xx/generic
             sdk_name: -sdk-bcm47xx-generic_
