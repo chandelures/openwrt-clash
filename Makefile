@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=clash
-PKG_VERSION:=1.15.0
+PKG_VERSION:=1.15.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/Dreamacro/clash/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=156ce3f7d7ba7044fa6ac054f5b8b2a1cfd21178828fe730ef12b7a6c626328b
+PKG_HASH:=c340f30a244599692bd8c726ece292184ef9cd8910c622cdd41bbe695b283136
 
 PKG_MAINTAINER:=Chandelure Wang <me@chandelure.com>
 PKG_LICENSE:=GPL-3.0-only
