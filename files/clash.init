@@ -1,7 +1,5 @@
 #!/bin/sh /etc/rc.common
 
-. "/lib/functions/network.sh"
-
 USE_PROCD=1
 START=99
 
@@ -114,6 +112,7 @@ service_triggers() {
 	local iface trigger_delay
 	config_get trigger_delay "global" "trigger_delay" "10"
 	PROCD_RELOAD_DELAY=$((trigger_delay * 1000))
+	. /lib/functions/network.sh
 	network_find_wan iface
 	if [ -n "$iface" ]; then
 		procd_add_interface_trigger "interface.*" $iface "/etc/init.d/clash" "restart"
