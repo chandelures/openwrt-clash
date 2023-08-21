@@ -86,7 +86,7 @@ define Download/country_mmdb
 	URL:=https://github.com/Dreamacro/maxmind-geoip/releases/download/$(COUNTRY_MMDB_VER)/
 	URL_FILE:=Country.mmdb
 	FILE:=$(COUNTRY_MMDB_FILE)
-	HASH:=skip
+	HASH:=c8ef334908cd606c5a49770e8453881381ec88c9c29b765561f559839c4ef7ab
 endef
 
 define Download/clash-dashboard
