@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=clash
-PKG_VERSION:=1.17.0
+PKG_VERSION:=1.18.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/Dreamacro/clash/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=cd30a27f801652151eea129e9cb00e4a3ee28d45982dad835f4546691796d9d7
+PKG_HASH:=139794f50d3d94f438bab31a993cf25d7cbdf8ca8e034f3071e0dd0014069692
 
 PKG_MAINTAINER:=Chandelure Wang <me@chandelure.com>
 PKG_LICENSE:=GPL-3.0-only
@@ -78,14 +78,14 @@ define Package/$(PKG_NAME)/conffiles
 /etc/config/clash
 endef
 
-COUNTRY_MMDB_VER=20230612
+COUNTRY_MMDB_VER=20230812
 COUNTRY_MMDB_FILE:=Country.$(COUNTRY_MMDB_VER).mmdb
 
 define Download/country_mmdb
 	URL:=https://github.com/Dreamacro/maxmind-geoip/releases/download/$(COUNTRY_MMDB_VER)/
 	URL_FILE:=Country.mmdb
 	FILE:=$(COUNTRY_MMDB_FILE)
-	HASH:=b83f94ccc8e942fb8d31c2319b88872e72708715ecb44dd6fb4c42b9ff63fe2f
+	HASH:=c8ef334908cd606c5a49770e8453881381ec88c9c29b765561f559839c4ef7ab
 endef
 
 define Download/clash-dashboard
