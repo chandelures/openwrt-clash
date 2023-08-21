@@ -20,10 +20,11 @@ PKG_BUILD_FLAGS:=no-mips16
 GO_PKG:=github.com/Dreamacro/clash
 GO_PKG_BUILD_PKG:=$(GO_PKG)
 GO_PKG_LDFLAGS_X:= \
-	$(GO_PKG)/constant.Version=$(PKG_VERSION) 
+	$(GO_PKG)/constant.Version=$(PKG_VERSION) \
+	$(GO_PKG)/constant.BuildTime=$(shell date +%d-%m-%Y)
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/../feeds/packages/lang/golang/golang-package.mk
+include $(TOPDIR)/feeds/packages/lang/golang/golang-package.mk
 
 define Package/$(PKG_NAME)/template
 	SECTION:=net
@@ -78,14 +79,14 @@ define Package/$(PKG_NAME)/conffiles
 /etc/config/clash
 endef
 
-COUNTRY_MMDB_VER=20230612
+COUNTRY_MMDB_VER=20230812
 COUNTRY_MMDB_FILE:=Country.$(COUNTRY_MMDB_VER).mmdb
 
 define Download/country_mmdb
 	URL:=https://github.com/Dreamacro/maxmind-geoip/releases/download/$(COUNTRY_MMDB_VER)/
 	URL_FILE:=Country.mmdb
 	FILE:=$(COUNTRY_MMDB_FILE)
-	HASH:=b83f94ccc8e942fb8d31c2319b88872e72708715ecb44dd6fb4c42b9ff63fe2f
+	HASH:=skip
 endef
 
 define Download/clash-dashboard
