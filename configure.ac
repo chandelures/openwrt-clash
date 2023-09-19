@@ -826,7 +826,7 @@ dnl #
 dnl #############################################################
 
 CHECKRAD=checkrad
-AC_PATH_PROG(PERL, perl, /usr/local/bin/perl)
+AC_PATH_PROG(PERL, perl, "$(STAGING_DIR)/usr/bin")
 if test "x$ac_cv_path_PERL" = "x"; then
   AC_MSG_WARN([perl not found - Simultaneous-Use and checkrad may not work])
 fi
